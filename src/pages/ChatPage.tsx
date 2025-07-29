@@ -1,18 +1,18 @@
-import { useState, useRef, useEffect } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { BotMessageSquare, Send } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useState, useRef, useEffect } from 'react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { BotMessageSquare, Send } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Message {
   text: string;
-  sender: "user" | "bot";
+  sender: 'user' | 'bot';
 }
 
 const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +20,7 @@ const ChatPage = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
   }, [messages]);
@@ -29,10 +29,10 @@ const ChatPage = () => {
     if (!input.trim()) return;
 
     const currentInput = input;
-    const userMessage: Message = { text: currentInput, sender: "user" };
-    
-    setMessages(prevMessages => [...prevMessages, userMessage]);
-    setInput("");
+    const userMessage: Message = { text: currentInput, sender: 'user' };
+
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput('');
     setIsLoading(true);
 
     // --- API INTEGRATION POINT ---
@@ -51,29 +51,28 @@ const ChatPage = () => {
 
       // For a streaming response, you would handle the response differently,
       // likely using ReadableStream and updating the message content as chunks arrive.
-      
+
       // Simulating network delay for demonstration:
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const botMessage: Message = {
         text: `This is a simulated response to: "${currentInput}"`,
-        sender: "bot",
+        sender: 'bot',
       };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
-      console.error("Failed to fetch chat response:", error);
+      console.error('Failed to fetch chat response:', error);
       const errorMessage: Message = {
         text: "Sorry, I couldn't get a response. Please try again.",
-        sender: "bot",
+        sender: 'bot',
       };
-      setMessages(prevMessages => [...prevMessages, errorMessage]);
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="p-2 md:p-4 h-full flex flex-col">
+    <div className="p-2 md:p-4 h-screen flex flex-col">
       <div className="flex flex-col flex-1 bg-card shadow-md rounded-xl min-h-0">
         <div className="flex-1 p-6 overflow-y-auto" ref={scrollAreaRef}>
           {messages.length === 0 ? (
@@ -90,24 +89,26 @@ const ChatPage = () => {
                 <div
                   key={index}
                   className={`flex items-start gap-3 animate-in fade-in-50 slide-in-from-bottom-2 duration-500 ${
-                    message.sender === "user" ? "justify-end" : ""
+                    message.sender === 'user' ? 'justify-end' : ''
                   }`}
                 >
-                  {message.sender === "bot" && (
+                  {message.sender === 'bot' && (
                     <Avatar className="border w-9 h-9">
                       <AvatarFallback>AI</AvatarFallback>
                     </Avatar>
                   )}
                   <div
                     className={`rounded-lg p-3 max-w-xl ${
-                      message.sender === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                      message.sender === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {message.text}
+                    </p>
                   </div>
-                  {message.sender === "user" && (
+                  {message.sender === 'user' && (
                     <Avatar className="border w-9 h-9">
                       <AvatarFallback>U</AvatarFallback>
                     </Avatar>

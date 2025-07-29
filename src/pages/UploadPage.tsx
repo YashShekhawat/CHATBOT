@@ -9,11 +9,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { UploadCloud } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const UploadPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFileName(event.target.files[0].name);
+    } else {
+      setFileName(null);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,6 +47,7 @@ const UploadPage = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       toast.success("Knowledge source submitted for processing!");
       event.currentTarget.reset();
+      setFileName(null);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("An error occurred during upload.");
@@ -57,18 +68,40 @@ const UploadPage = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <Label htmlFor="file" className="font-semibold">File Source</Label>
-              <Input
-                id="file"
-                name="file"
-                type="file"
-                required
-                accept=".txt,.md,.doc,.docx,.xls,.xlsx"
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
-              />
-              <p className="text-sm text-muted-foreground">
-                Supported formats: .txt, .md, .doc, .docx, .xls, .xlsx
-              </p>
+              <Label className="font-semibold">File Source</Label>
+              <Label
+                htmlFor="file"
+                className="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors"
+              >
+                {fileName ? (
+                  <div className="text-center p-4">
+                    <p className="font-semibold text-primary break-all">{fileName}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Click to change file
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center p-4">
+                    <UploadCloud className="w-10 h-10 mb-4 text-muted-foreground" />
+                    <p className="mb-2 text-sm text-muted-foreground">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Supported: .txt, .md, .doc, .docx, .xls, .xlsx
+                    </p>
+                  </div>
+                )}
+                <Input
+                  id="file"
+                  name="file"
+                  type="file"
+                  required
+                  accept=".txt,.md,.doc,.docx,.xls,.xlsx"
+                  className="sr-only"
+                  onChange={handleFileChange}
+                />
+              </Label>
             </div>
 
             <div className="space-y-4">

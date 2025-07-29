@@ -18,10 +18,10 @@ const ChatPage = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const userMessage: Message = { text: input, sender: "user" };
-    // Per requirements, only the current interaction is shown.
-    // To build a history, you would use: setMessages(prev => [...prev, userMessage]);
-    setMessages([userMessage]);
+    const currentInput = input;
+    const userMessage: Message = { text: currentInput, sender: "user" };
+    
+    setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput("");
     setIsLoading(true);
 
@@ -30,7 +30,7 @@ const ChatPage = () => {
       // Example API call:
       // const response = await fetch('/api/chat', {
       //   method: 'POST',
-      //   body: JSON.stringify({ message: input }),
+      //   body: JSON.stringify({ message: currentInput }),
       //   headers: { 'Content-Type': 'application/json' },
       // });
       // const data = await response.json();
@@ -39,18 +39,18 @@ const ChatPage = () => {
       // Simulating network delay for demonstration
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const botMessage: Message = {
-        text: `This is a simulated response to: "${input}"`,
+        text: `This is a simulated response to: "${currentInput}"`,
         sender: "bot",
       };
 
-      setMessages([userMessage, botMessage]);
+      setMessages(prevMessages => [...prevMessages, botMessage]);
     } catch (error) {
       console.error("Failed to fetch chat response:", error);
       const errorMessage: Message = {
         text: "Sorry, I couldn't get a response. Please try again.",
         sender: "bot",
       };
-      setMessages([userMessage, errorMessage]);
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
       setIsLoading(false);
     }

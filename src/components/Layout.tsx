@@ -10,7 +10,7 @@ const Layout = () => {
       <div className="hidden md:block md:w-72 fixed inset-y-0 z-30">
         <Sidebar />
       </div>
-      <div className="md:pl-72 flex flex-col">
+      <div className="md:pl-72 flex flex-col min-h-screen">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 md:hidden">
           <Sheet>
             <SheetTrigger asChild>

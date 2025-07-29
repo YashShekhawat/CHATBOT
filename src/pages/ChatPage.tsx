@@ -35,14 +35,31 @@ const ChatPage = () => {
     setInput("");
     setIsLoading(true);
 
-    // TODO: Integrate POST /api/chat here
+    // --- API INTEGRATION POINT ---
+    // Replace this block with your actual API call.
     try {
+      // Example of a non-streaming API call:
+      // const response = await fetch('/api/chat', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ message: currentInput }),
+      // });
+      // if (!response.ok) throw new Error('Network response was not ok');
+      // const data = await response.json();
+      // const botMessage: Message = { text: data.reply, sender: "bot" };
+      // setMessages(prevMessages => [...prevMessages, botMessage]);
+
+      // For a streaming response, you would handle the response differently,
+      // likely using ReadableStream and updating the message content as chunks arrive.
+      
+      // Simulating network delay for demonstration:
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const botMessage: Message = {
         text: `This is a simulated response to: "${currentInput}"`,
         sender: "bot",
       };
       setMessages(prevMessages => [...prevMessages, botMessage]);
+
     } catch (error) {
       console.error("Failed to fetch chat response:", error);
       const errorMessage: Message = {

@@ -21,8 +21,19 @@ const UploadPage = () => {
 
     const formData = new FormData(event.currentTarget);
 
-    // TODO: Integrate POST /api/upload here
+    // --- API INTEGRATION POINT ---
+    // Replace this block with your actual API call to upload the file and data.
     try {
+      // Example API call using FormData:
+      // const response = await fetch('/api/upload', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
+      // if (!response.ok) throw new Error('Upload failed');
+      // const result = await response.json();
+      // toast.success(result.message || "Knowledge source submitted for processing!");
+      
+      // Simulating network delay for demonstration:
       await new Promise((resolve) => setTimeout(resolve, 1500));
       toast.success("Knowledge source submitted for processing!");
       event.currentTarget.reset();

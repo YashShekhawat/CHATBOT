@@ -23,26 +23,7 @@ const UploadPage = () => {
 
     // TODO: Integrate POST /api/upload here
     try {
-      // Example API call:
-      // const response = await fetch('/api/upload', {
-      //   method: 'POST',
-      //   body: formData,
-      // });
-      // if (response.ok) {
-      //   toast.success("File uploaded successfully!");
-      //   event.currentTarget.reset();
-      // } else {
-      //   toast.error("Upload failed. Please try again.");
-      // }
-
-      // Simulating API call for demonstration
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Form data submitted:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       toast.success("Knowledge source submitted for processing!");
       event.currentTarget.reset();
     } catch (error) {
@@ -54,71 +35,81 @@ const UploadPage = () => {
   };
 
   return (
-    <div className="p-0 md:p-6">
-      <Card className="max-w-3xl mx-auto">
+    <div className="p-4 md:p-6">
+      <Card className="max-w-3xl mx-auto shadow-md">
         <CardHeader>
-          <CardTitle>Upload Knowledge</CardTitle>
+          <CardTitle className="text-2xl">Upload Knowledge</CardTitle>
           <CardDescription>
-            Add a new knowledge source to the chatbot's database.
+            Add a new file or document to the chatbot's database.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <Label htmlFor="file">File</Label>
+              <Label htmlFor="file" className="font-semibold">File Source</Label>
               <Input
                 id="file"
                 name="file"
                 type="file"
                 required
                 accept=".txt,.md,.doc,.docx,.xls,.xlsx"
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Supported formats: .txt, .md, .doc, .docx, .xls, .xlsx
               </p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="e.g., Q3 Financial Report"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                placeholder="A brief summary of the document's content."
-                required
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div className="space-y-4">
+              <h3 className="font-semibold">Details</h3>
               <div className="space-y-2">
-                <Label htmlFor="userName">User Name</Label>
+                <Label htmlFor="title">Title</Label>
                 <Input
-                  id="userName"
-                  name="userName"
-                  placeholder="John Doe"
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Q3 Financial Report"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="userEmail">User Email</Label>
-                <Input
-                  id="userEmail"
-                  name="userEmail"
-                  type="email"
-                  placeholder="john.doe@example.com"
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  placeholder="A brief summary of the document's content."
                   required
+                  rows={3}
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
+
+            <div className="space-y-4">
+              <h3 className="font-semibold">Submitted By</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="userName">User Name</Label>
+                  <Input
+                    id="userName"
+                    name="userName"
+                    placeholder="John Doe"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="userEmail">User Email</Label>
+                  <Input
+                    id="userEmail"
+                    name="userEmail"
+                    type="email"
+                    placeholder="john.doe@example.com"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit Knowledge"}
             </Button>
           </form>
         </CardContent>

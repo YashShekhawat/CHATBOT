@@ -73,8 +73,8 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="p-2 md:p-4 h-full">
-      <div className="flex flex-col h-full bg-card shadow-md rounded-xl">
+    <div className="p-2 md:p-4 h-full flex flex-col">
+      <div className="flex flex-col flex-1 bg-card shadow-md rounded-xl min-h-0">
         <div className="flex-1 p-6 overflow-y-auto" ref={scrollAreaRef}>
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">

@@ -36,11 +36,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
               <MessageSquare className="mr-2 h-4 w-4" /> Chat
             </Button>
           </Link>
-          <Link to="/upload" onClick={onLinkClick}>
-            <Button variant="ghost" className="w-full justify-start">
-              <Upload className="mr-2 h-4 w-4" /> Upload Knowledge
-            </Button>
-          </Link>
+          {role === 'employee' && ( // Conditionally render for employees only
+            <Link to="/upload" onClick={onLinkClick}>
+              <Button variant="ghost" className="w-full justify-start">
+                <Upload className="mr-2 h-4 w-4" /> Upload Knowledge
+              </Button>
+            </Link>
+          )}
         </nav>
       </div>
       <div className="mt-auto space-y-2">

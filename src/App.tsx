@@ -9,6 +9,7 @@ import { Sheet, SheetContent } from './components/ui/sheet';
 import { Button } from './components/ui/button';
 import { Menu } from 'lucide-react';
 import { ThemeProvider } from './components/theme-provider';
+import EmployeeRoute from './components/EmployeeRoute'; // Import the new EmployeeRoute
 
 function App() {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
@@ -55,8 +56,10 @@ function App() {
                   <Route
                     path="/upload"
                     element={
-                      <ProtectedRoute>
-                        <UploadPage />
+                      <ProtectedRoute> {/* Ensures user is authenticated */}
+                        <EmployeeRoute> {/* Ensures user is an employee */}
+                          <UploadPage />
+                        </EmployeeRoute>
                       </ProtectedRoute>
                     }
                   />

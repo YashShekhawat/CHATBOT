@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { BotMessageSquare, Send } from 'lucide-react';
+import { BotMessageSquare, ArrowUp } from 'lucide-react'; // Changed Send to ArrowUp
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/AuthContext';
 import { Textarea } from '@/components/ui/textarea';
@@ -152,17 +152,17 @@ const ChatPage = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
-              className="min-h-[3rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
+              className="min-h-[4rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto" // Increased min-h and adjusted pr
               disabled={isLoading}
               rows={1}
             />
             <Button
               type="submit"
               size="icon"
-              className="absolute bottom-3 right-3 h-8 w-8 rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 rounded-full" // Centered vertically
               disabled={isLoading || !input.trim()}
             >
-              <Send className="h-4 w-4" />
+              <ArrowUp className="h-4 w-4" /> {/* Changed icon */}
             </Button>
           </form>
         </div>

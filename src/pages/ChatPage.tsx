@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { BotMessageSquare, ArrowUp } from 'lucide-react'; // Changed Send to ArrowUp
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { BotMessageSquare, ArrowUp } from 'lucide-react';
+// Removed ScrollArea import as we're using a plain div for scrolling
 import { useAuth } from '@/context/AuthContext';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -16,10 +16,11 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null); // Ref for the scrollable div
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    // Scroll to the bottom whenever messages change
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
@@ -63,7 +64,7 @@ const ChatPage = () => {
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -77,7 +78,7 @@ const ChatPage = () => {
   return (
     <div className="relative h-screen flex flex-col bg-muted/40">
       {/* Main chat content area */}
-      <ScrollArea className="flex-1 p-4 md:p-6 pb-28" ref={scrollAreaRef}>
+      <div className="flex-1 p-4 md:p-6 pb-28 overflow-y-auto" ref={scrollAreaRef}> {/* Changed to div with overflow-y-auto */}
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center px-4">
             <BotMessageSquare className="h-20 w-20 mb-6 text-primary/50" />
@@ -134,7 +135,7 @@ const ChatPage = () => {
             )}
           </div>
         )}
-      </ScrollArea>
+      </div>
 
       {/* Fixed input area at the bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64">
@@ -152,17 +153,17 @@ const ChatPage = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
-              className="min-h-[4rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto" // Increased min-h and adjusted pr
+              className="min-h-[4rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
               disabled={isLoading}
               rows={1}
             />
             <Button
               type="submit"
               size="icon"
-              className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 rounded-full" // Centered vertically
+              className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 rounded-full"
               disabled={isLoading || !input.trim()}
             >
-              <ArrowUp className="h-4 w-4" /> {/* Changed icon */}
+              <ArrowUp className="h-4 w-4" />
             </Button>
           </form>
         </div>

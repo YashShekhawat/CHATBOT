@@ -19,10 +19,16 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-muted/40 p-4"> {/* Changed to h-screen and flex-col */}
-      <div className="grid grid-cols-1 md:grid-cols-2 w-full flex-grow rounded-xl overflow-hidden"> {/* Changed h-full to flex-grow */}
+    <div className="h-screen flex flex-col bg-muted/40">
+      {' '}
+      {/* Changed to h-screen and flex-col */}
+      <div className="grid grid-cols-1 md:grid-cols-2 w-full flex-grow rounded-xl overflow-hidden">
+        {' '}
+        {/* Changed h-full to flex-grow */}
         {/* Left Section: Login Form */}
-        <div className="bg-background p-8 md:p-12 flex flex-col justify-center items-center text-center md:text-left h-full"> {/* Added h-full */}
+        <div className="bg-background p-8 md:p-12 flex flex-col justify-center items-center text-center md:text-left h-full">
+          {' '}
+          {/* Added h-full */}
           <div className="w-full max-w-sm">
             <div className="mb-8">
               <BotMessageSquare className="h-16 w-16 mx-auto md:mx-0 mb-4 text-primary" />
@@ -38,7 +44,10 @@ const LoginPage = () => {
               <CardContent className="space-y-6 p-0">
                 {!showEmployeeForm ? (
                   <div className="space-y-4">
-                    <Button onClick={loginAsGuest} className="w-full py-6 text-lg">
+                    <Button
+                      onClick={loginAsGuest}
+                      className="w-full py-6 text-lg"
+                    >
                       Continue as Guest
                     </Button>
                     <div className="relative flex items-center">
@@ -55,7 +64,10 @@ const LoginPage = () => {
                     </Button>
                   </div>
                 ) : (
-                  <form onSubmit={handleEmployeeLoginSubmit} className="space-y-4">
+                  <form
+                    onSubmit={handleEmployeeLoginSubmit}
+                    className="space-y-4"
+                  >
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -94,9 +106,10 @@ const LoginPage = () => {
             </Card>
           </div>
         </div>
-
         {/* Right Section: Image/Visual */}
-        <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full"> {/* Added h-full and removed min-h classes */}
+        <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
+          {' '}
+          {/* Added h-full and removed min-h classes */}
           <div className="bg-card p-6 rounded-lg shadow-xl flex flex-col items-center justify-center text-center">
             <img
               src="https://via.placeholder.com/400x300/F0F0F0/333333?text=Your+Image+Here" // Placeholder image

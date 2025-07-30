@@ -9,8 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 interface Message {
   text: string;
   sender: 'user' | 'bot';
-  // Removed sources?: { url: string; title: string }[];
-  // Removed followUpQuestions?: string[];
 }
 
 const ChatPage = () => {
@@ -53,9 +51,8 @@ const ChatPage = () => {
       const botMessage: Message = {
         text: `This is a simulated response to: "${currentInput}" (Role: ${
           role || 'unknown'
-        }).`, // Simplified bot response
+        }).`,
         sender: 'bot',
-        // Removed sources and followUpQuestions from simulated response
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
@@ -67,6 +64,13 @@ const ChatPage = () => {
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSend();
     }
   };
 
@@ -106,8 +110,6 @@ const ChatPage = () => {
                   <p className="text-sm whitespace-pre-wrap">
                     {message.text}
                   </p>
-                  {/* Removed message.sources rendering */}
-                  {/* Removed message.followUpQuestions rendering */}
                 </div>
                 {message.sender === 'user' && (
                   <Avatar className="border w-9 h-9 flex-shrink-0">
@@ -135,7 +137,7 @@ const ChatPage = () => {
       </ScrollArea>
 
       {/* Fixed input area at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 bg-background/95 backdrop-blur-sm md:left-64">
+      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64"> {/* Removed bg-background/95 backdrop-blur-sm */}
         <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
           <form
             onSubmit={(e) => {
@@ -148,6 +150,7 @@ const ChatPage = () => {
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown} {/* Added onKeyDown handler */}
               placeholder="Ask me anything..."
               className="min-h-[3rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
               disabled={isLoading}

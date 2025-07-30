@@ -12,8 +12,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadCloud } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from '@/context/AuthContext'; // Import useAuth
 
 const UploadPage = () => {
+  const { role } = useAuth(); // Get the user role
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -30,13 +32,20 @@ const UploadPage = () => {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
+    // Append the user role to the form data or send as a header
+    // For FormData, it's often easier to append it if the backend expects it in the body.
+    // If the backend expects a header, you'd add it to the fetch options.
+    formData.append('userRole', role || 'unknown'); // Role is sent to backend here.
 
     // --- API INTEGRATION POINT ---
     // Replace this block with your actual API call to upload the file and data.
     try {
-      // Example API call using FormData:
+      // Example API call using FormData with a custom header:
       // const response = await fetch('/api/upload', {
       //   method: 'POST',
+      //   headers: {
+      //     'X-User-Role': role || 'unknown', // Role is sent to backend here.
+      //   },
       //   body: formData,
       // });
       // if (!response.ok) throw new Error('Upload failed');
@@ -45,7 +54,7 @@ const UploadPage = () => {
       
       // Simulating network delay for demonstration:
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success("Knowledge source submitted for processing!");
+      toast.success(`Knowledge source submitted for processing! (Role: ${role || 'unknown'})`);
       event.currentTarget.reset();
       setFileName(null);
     } catch (error) {

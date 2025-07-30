@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BotMessageSquare, Send } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '@/context/AuthContext'; // Import useAuth
 
 interface Message {
   text: string;
@@ -11,6 +12,7 @@ interface Message {
 }
 
 const ChatPage = () => {
+  const { role } = useAuth(); // Get the user role
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,10 +40,13 @@ const ChatPage = () => {
     // --- API INTEGRATION POINT ---
     // Replace this block with your actual API call.
     try {
-      // Example of a non-streaming API call:
+      // Example of a non-streaming API call with role propagation:
       // const response = await fetch('/api/chat', {
       //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
+      //   headers: { 
+      //     'Content-Type': 'application/json',
+      //     'X-User-Role': role || 'unknown', // Role is sent to backend here.
+      //   },
       //   body: JSON.stringify({ message: currentInput }),
       // });
       // if (!response.ok) throw new Error('Network response was not ok');
@@ -55,7 +60,7 @@ const ChatPage = () => {
       // Simulating network delay for demonstration:
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const botMessage: Message = {
-        text: `This is a simulated response to: "${currentInput}"`,
+        text: `This is a simulated response to: "${currentInput}" (Role: ${role || 'unknown'})`,
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);

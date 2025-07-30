@@ -1,9 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { BotMessageSquare, MessageSquare, Upload } from "lucide-react";
+import { BotMessageSquare, MessageSquare, Upload, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MadeWithDyad } from "./made-with-dyad";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { Button } from "@/components/ui/button"; // Import Button
 
 export const Sidebar = () => {
+  const { role, logout } = useAuth(); // Get role and logout from context
+
   const navItems = [
     { href: "/", icon: MessageSquare, label: "Chat" },
     { href: "/upload", icon: Upload, label: "Upload Knowledge" },
@@ -38,7 +42,16 @@ export const Sidebar = () => {
           ))}
         </ul>
       </nav>
-      <div className="mt-auto border-t p-4">
+      <div className="mt-auto border-t p-4 space-y-4">
+        {role && (
+          <div className="text-sm text-muted-foreground text-center">
+            Logged in as: <span className="font-semibold capitalize">{role}</span>
+          </div>
+        )}
+        <Button onClick={logout} className="w-full" variant="outline">
+          <LogOut className="h-4 w-4 mr-2" />
+          Logout
+        </Button>
         <MadeWithDyad />
       </div>
     </div>

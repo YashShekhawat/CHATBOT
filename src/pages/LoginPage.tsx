@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { BotMessageSquare } from 'lucide-react';
-import { RotatingGlowBorder } from '@/components/RotatingGlowBorder'; // Updated import path
+// Removed import for RotatingGlowBorder
 
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
@@ -20,7 +20,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 max-w-6xl w-full rounded-xl overflow-hidden shadow-xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full rounded-xl overflow-hidden"> {/* Removed max-w-6xl and shadow-xl */}
         {/* Left Section: Login Form */}
         <div className="bg-background p-8 md:p-12 flex flex-col justify-center items-center text-center md:text-left">
           <div className="w-full max-w-sm">
@@ -97,21 +97,19 @@ const LoginPage = () => {
 
         {/* Right Section: Image/Visual */}
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center min-h-[300px] md:min-h-full">
-          <RotatingGlowBorder>
-            <div className="bg-card p-6 rounded-lg shadow-xl flex flex-col items-center justify-center text-center">
-              <img
-                src="https://via.placeholder.com/400x300/F0F0F0/333333?text=Your+Image+Here" // Placeholder image
-                alt="Visual representation"
-                className="max-w-full h-auto rounded-md mb-4"
-              />
-              <p className="text-lg font-semibold text-foreground">
-                Visualize your data with AI
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Upload an image to see how AI can enhance your experience.
-              </p>
-            </div>
-          </RotatingGlowBorder>
+          <div className="bg-card p-6 rounded-lg shadow-xl flex flex-col items-center justify-center text-center">
+            <img
+              src="https://via.placeholder.com/400x300/F0F0F0/333333?text=Your+Image+Here" // Placeholder image
+              alt="Visual representation"
+              className="max-w-full h-auto rounded-md mb-4"
+            />
+            <p className="text-lg font-semibold text-foreground">
+              Visualize your data with AI
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Upload an image to see how AI can enhance your experience.
+            </p>
+          </div>
         </div>
       </div>
     </div>

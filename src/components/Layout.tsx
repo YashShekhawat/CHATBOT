@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Menu, Sun, Moon } from "lucide-react";
+import { Menu } from "lucide-react"; // Removed Sun, Moon
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useTheme } from "./theme-provider";
+// Removed useTheme import as it's no longer needed here
 
 const Layout = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
+  // Removed theme and setTheme from useTheme
+  // Removed toggleTheme function
 
   return (
     <div className="flex h-screen bg-background text-foreground">
@@ -29,19 +26,14 @@ const Layout = () => {
       </Sheet>
 
       <div className="flex flex-col flex-1 overflow-hidden">
-        {/* Top bar for mobile to open sidebar and theme toggle */}
+        {/* Top bar for mobile to open sidebar */}
         <header className="p-4 border-b border-border flex items-center justify-between md:hidden">
           <Button variant="ghost" size="icon" onClick={() => setIsSheetOpen(true)}>
             <Menu className="h-6 w-6" />
           </Button>
           <h1 className="text-xl font-semibold">Chat App</h1>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === 'light' ? (
-              <Moon className="h-6 w-6" />
-            ) : (
-              <Sun className="h-6 w-6" />
-            )}
-          </Button>
+          {/* Placeholder for balance, theme toggle removed */}
+          <div></div>
         </header>
 
         {/* Main content area */}

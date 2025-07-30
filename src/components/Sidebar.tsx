@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Upload, LogOut, MessageSquare } from 'lucide-react'; // Removed Sun, Moon
+import { Upload, LogOut, MessageSquare, Sun, Moon } from 'lucide-react'; // Added Sun, Moon back
 import { useAuth } from '../context/AuthContext';
-// Removed useTheme import as it's no longer needed here
+import { useTheme } from './theme-provider'; // Added useTheme back
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -12,7 +12,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout, role } = useAuth();
   const navigate = useNavigate();
-  // Removed theme and setTheme from useTheme
+  const { theme, setTheme } = useTheme(); // Get theme and setTheme
 
   const handleLogout = () => {
     logout();
@@ -22,7 +22,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     }
   };
 
-  // Removed toggleTheme function
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <div className="flex flex-col h-full p-4 border-r border-border bg-background text-foreground">
@@ -44,7 +46,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         </nav>
       </div>
       <div className="mt-auto space-y-2">
-        {/* Removed Toggle Theme Button */}
+        {role && ( // Conditionally render theme toggle if logged in
+          <Button variant="ghost" className="w-full justify-start" onClick={toggleTheme}>
+            {theme === 'light' ? (
+              <Moon className="mr-2 h-4 w-4" />
+            ) : (
+              <Sun className="mr-2 h-4 w-4" />
+            )}
+            Toggle Theme
+          </Button>
+        )}
         {role && (
           <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" /> Logout

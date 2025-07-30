@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input'; // Keep Input for now, but will use Textarea
-import { BotMessageSquare, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/AuthContext';
-import { Textarea } from '@/components/ui/textarea'; // Import Textarea
+import { Textarea } from '@/components/ui/textarea';
 
 interface Message {
   text: string;
   sender: 'user' | 'bot';
+  sources?: { url: string; title: string }[];
+  followUpQuestions?: string[];
 }
 
 const ChatPage = () => {
@@ -17,8 +18,8 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null); // Ref for the scrollable content
-  const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for the textarea
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -29,7 +30,6 @@ const ChatPage = () => {
     }
   }, [messages]);
 
-  // Adjust textarea height dynamically
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -53,8 +53,17 @@ const ChatPage = () => {
       const botMessage: Message = {
         text: `This is a simulated response to: "${currentInput}" (Role: ${
           role || 'unknown'
-        })`,
+        }). Here's some more detailed information based on your query.`,
         sender: 'bot',
+        sources: [
+          { url: 'https://example.com/source1', title: 'Example Source 1: Relevant Data' },
+          { url: 'https://example.com/source2', title: 'Example Source 2: Further Reading' },
+        ],
+        followUpQuestions: [
+          'Can you elaborate on that?',
+          'What are the key takeaways?',
+          'How does this apply to X?',
+        ],
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
@@ -105,6 +114,43 @@ const ChatPage = () => {
                   <p className="text-sm whitespace-pre-wrap">
                     {message.text}
                   </p>
+                  {message.sources && message.sources.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-border text-xs text-muted-foreground">
+                      <p className="font-semibold mb-2">Sources:</p>
+                      <ul className="list-disc list-inside space-y-1">
+                        {message.sources.map((source, srcIndex) => (
+                          <li key={srcIndex}>
+                            <a
+                              href={source.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline"
+                            >
+                              {source.title}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {message.followUpQuestions && message.followUpQuestions.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-border text-sm">
+                      <p className="font-semibold mb-2">Follow-up questions:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {message.followUpQuestions.map((question, qIndex) => (
+                          <Button
+                            key={qIndex}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setInput(question)}
+                            className="h-auto py-1 px-3 text-xs"
+                          >
+                            {question}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {message.sender === 'user' && (
                   <Avatar className="border w-9 h-9 flex-shrink-0">
@@ -132,7 +178,7 @@ const ChatPage = () => {
       </ScrollArea>
 
       {/* Fixed input area at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 bg-background/95 backdrop-blur-sm">
+      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 bg-background/95 backdrop-blur-sm md:left-64">
         <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
           <form
             onSubmit={(e) => {

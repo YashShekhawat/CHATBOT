@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { BotMessageSquare, Send } from 'lucide-react'; // Added BotMessageSquare here
+import { BotMessageSquare, Send } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/context/AuthContext';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,8 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 interface Message {
   text: string;
   sender: 'user' | 'bot';
-  sources?: { url: string; title: string }[];
-  followUpQuestions?: string[];
+  // Removed sources?: { url: string; title: string }[];
+  // Removed followUpQuestions?: string[];
 }
 
 const ChatPage = () => {
@@ -53,17 +53,9 @@ const ChatPage = () => {
       const botMessage: Message = {
         text: `This is a simulated response to: "${currentInput}" (Role: ${
           role || 'unknown'
-        }). Here's some more detailed information based on your query.`,
+        }).`, // Simplified bot response
         sender: 'bot',
-        sources: [
-          { url: 'https://example.com/source1', title: 'Example Source 1: Relevant Data' },
-          { url: 'https://example.com/source2', title: 'Example Source 2: Further Reading' },
-        ],
-        followUpQuestions: [
-          'Can you elaborate on that?',
-          'What are the key takeaways?',
-          'How does this apply to X?',
-        ],
+        // Removed sources and followUpQuestions from simulated response
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
@@ -114,43 +106,8 @@ const ChatPage = () => {
                   <p className="text-sm whitespace-pre-wrap">
                     {message.text}
                   </p>
-                  {message.sources && message.sources.length > 0 && (
-                    <div className="mt-4 pt-3 border-t border-border text-xs text-muted-foreground">
-                      <p className="font-semibold mb-2">Sources:</p>
-                      <ul className="list-disc list-inside space-y-1">
-                        {message.sources.map((source, srcIndex) => (
-                          <li key={srcIndex}>
-                            <a
-                              href={source.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-500 hover:underline"
-                            >
-                              {source.title}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {message.followUpQuestions && message.followUpQuestions.length > 0 && (
-                    <div className="mt-4 pt-3 border-t border-border text-sm">
-                      <p className="font-semibold mb-2">Follow-up questions:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {message.followUpQuestions.map((question, qIndex) => (
-                          <Button
-                            key={qIndex}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setInput(question)}
-                            className="h-auto py-1 px-3 text-xs"
-                          >
-                            {question}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  {/* Removed message.sources rendering */}
+                  {/* Removed message.followUpQuestions rendering */}
                 </div>
                 {message.sender === 'user' && (
                   <Avatar className="border w-9 h-9 flex-shrink-0">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, ProtectedRoute } from './context/AuthContext'; // Corrected import paths
+import { AuthProvider, ProtectedRoute } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 import UploadPage from './pages/UploadPage';
@@ -60,7 +60,12 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route path="/" element={<LoginPage />} /> {/* Default route */}
+                  {/* Default route: if authenticated, go to ChatPage; otherwise, ProtectedRoute redirects to /login */}
+                  <Route path="/" element={
+                    <ProtectedRoute>
+                      <ChatPage />
+                    </ProtectedRoute>
+                  } />
                 </Routes>
               </main>
             </div>

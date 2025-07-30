@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { BotMessageSquare, Send } from 'lucide-react';
@@ -137,7 +137,7 @@ const ChatPage = () => {
       </ScrollArea>
 
       {/* Fixed input area at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64"> {/* Removed bg-background/95 backdrop-blur-sm */}
+      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64">
         <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
           <form
             onSubmit={(e) => {
@@ -150,7 +150,7 @@ const ChatPage = () => {
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown} {/* Added onKeyDown handler */}
+              onKeyDown={handleKeyDown}
               placeholder="Ask me anything..."
               className="min-h-[3rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
               disabled={isLoading}

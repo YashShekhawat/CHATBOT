@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Home, Upload, LogOut, MessageSquare, Sun, Moon } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from './theme-provider'; // Import useTheme
+import { useAuth } from '../context/AuthContext'; // Corrected import path
+import { useTheme } from './theme-provider';
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -12,7 +12,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme(); // Use the theme hook
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     logout();

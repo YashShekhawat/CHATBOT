@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider, ProtectedRoute } from './context/AuthContext'; // Corrected import paths
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 import UploadPage from './pages/UploadPage';
@@ -9,13 +8,13 @@ import Sidebar from './components/Sidebar';
 import { Sheet, SheetContent } from './components/ui/sheet';
 import { Button } from './components/ui/button';
 import { Menu } from 'lucide-react';
-import { ThemeProvider } from './components/theme-provider'; // Import ThemeProvider
+import { ThemeProvider } from './components/theme-provider';
 
 function App() {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme"> {/* Wrap with ThemeProvider */}
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <Router>
         <AuthProvider>
           <div className="flex h-screen bg-background text-foreground">

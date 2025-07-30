@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Home, Upload, LogOut, MessageSquare, Sun, Moon } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; // Corrected import path
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from './theme-provider';
 
 interface SidebarProps {
@@ -10,7 +10,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
-  const { logout } = useAuth();
+  const { logout, role } = useAuth(); // Get the role from useAuth
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
 
@@ -52,9 +52,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           )}
           Toggle Theme
         </Button>
-        <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600" onClick={handleLogout}>
-          <LogOut className="mr-2 h-4 w-4" /> Logout
-        </Button>
+        {role && ( // Conditionally render logout button if role exists
+          <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" /> Logout
+          </Button>
+        )}
       </div>
     </div>
   );

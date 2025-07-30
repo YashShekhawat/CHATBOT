@@ -64,7 +64,7 @@ const ChatPage = () => {
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false); // Corrected from setIsSubmitting
     }
   };
 

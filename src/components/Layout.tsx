@@ -1,30 +1,51 @@
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar"; // Corrected import to default
-import { Menu } from "lucide-react";
+import Sidebar from "./Sidebar";
+import { Menu, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useTheme } from "./theme-provider";
 
 const Layout = () => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   return (
-    <div className="min-h-screen w-full bg-muted/40">
-      <div className="hidden md:block md:w-72 fixed inset-y-0 z-30">
+    <div className="flex h-screen bg-background text-foreground">
+      {/* Sidebar for larger screens */}
+      <div className="hidden md:flex md:w-64 flex-shrink-0">
         <Sidebar />
       </div>
-      <div className="md:pl-72 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="md:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs p-0">
-              <Sidebar />
-            </SheetContent>
-          </Sheet>
+
+      {/* Mobile Sheet for smaller screens */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent side="left" className="p-0 w-64">
+          <Sidebar onLinkClick={() => setIsSheetOpen(false)} />
+        </SheetContent>
+      </Sheet>
+
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Top bar for mobile to open sidebar and theme toggle */}
+        <header className="p-4 border-b border-border flex items-center justify-between md:hidden">
+          <Button variant="ghost" size="icon" onClick={() => setIsSheetOpen(true)}>
+            <Menu className="h-6 w-6" />
+          </Button>
+          <h1 className="text-xl font-semibold">Chat App</h1>
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {theme === 'light' ? (
+              <Moon className="h-6 w-6" />
+            ) : (
+              <Sun className="h-6 w-6" />
+            )}
+          </Button>
         </header>
-        <main className="flex-1">
+
+        {/* Main content area */}
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

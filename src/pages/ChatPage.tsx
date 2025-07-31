@@ -18,6 +18,12 @@ interface Message {
   sender: 'user' | 'bot';
 }
 
+interface ConversationTurn {
+  id: string; // Unique ID for the turn
+  userMessage: Message;
+  botMessage?: Message; // Optional, as bot response might be pending
+}
+
 // Helper function to render text with newlines and code blocks
 const renderTextWithNewlinesAndCode = (text: string) => {
   const parts = text.split('```');
@@ -60,12 +66,12 @@ const renderTextWithNewlinesAndCode = (text: string) => {
 };
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ConversationTurn[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { role, userEmail } = useAuth(); // Get userEmail from AuthContext
+  const { role, userEmail } = useAuth();
   const { clearHistoryTrigger } = useChatHistory();
 
   const scrollToBottom = () => {
@@ -79,7 +85,36 @@ const ChatPage: React.FC = () => {
       try {
         const storedMessages = localStorage.getItem(historyKey);
         if (storedMessages) {
-          setMessages(JSON.parse(storedMessages));
+          const parsedMessages: Message[] | ConversationTurn[] = JSON.parse(storedMessages);
+          
+          // Check if it's the old Message[] format and convert
+          if (parsedMessages.length > 0 && 'sender' in parsedMessages[0]) {
+            const convertedTurns: ConversationTurn[] = [];
+            for (let i = 0; i < parsedMessages.length; i++) {
+              const msg = parsedMessages[i] as Message;
+              if (msg.sender === 'user') {
+                const nextMsg = parsedMessages[i + 1] as Message;
+                if (nextMsg && nextMsg.sender === 'bot') {
+                  convertedTurns.push({
+                    id: msg.id,
+                    userMessage: msg,
+                    botMessage: nextMsg,
+                  });
+                  i++; // Skip the bot message as it's now part of the turn
+                } else {
+                  // User message without a bot response (e.g., last message)
+                  convertedTurns.push({
+                    id: msg.id,
+                    userMessage: msg,
+                  });
+                }
+              }
+            }
+            setMessages(convertedTurns);
+          } else {
+            // It's already the new ConversationTurn[] format
+            setMessages(parsedMessages as ConversationTurn[]);
+          }
         } else {
           setMessages([]);
         }
@@ -91,7 +126,7 @@ const ChatPage: React.FC = () => {
       // Clear messages if not an employee or no userEmail (e.g., guest or logged out)
       setMessages([]);
     }
-  }, [role, userEmail, clearHistoryTrigger]); // Add userEmail to dependencies
+  }, [role, userEmail, clearHistoryTrigger]);
 
   // Save messages to local storage whenever messages state changes for employees
   useEffect(() => {
@@ -109,7 +144,7 @@ const ChatPage: React.FC = () => {
         toast.error('Failed to save chat history.');
       }
     }
-  }, [messages, role, userEmail]); // Add userEmail to dependencies
+  }, [messages, role, userEmail]);
 
   useEffect(() => {
     scrollToBottom();
@@ -126,13 +161,21 @@ const ChatPage: React.FC = () => {
     e.preventDefault();
     if (input.trim() === '') return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
+    const userMsgId = Date.now().toString();
+    const newUserMessage: Message = {
+      id: userMsgId,
       text: input,
       sender: 'user',
     };
 
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    // Create a new conversation turn
+    const newTurn: ConversationTurn = {
+      id: userMsgId, // Use user message ID for turn ID
+      userMessage: newUserMessage,
+      botMessage: undefined, // Bot message will be added later
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newTurn]);
     setInput('');
     setIsLoading(true);
 
@@ -146,7 +189,7 @@ const ChatPage: React.FC = () => {
           },
           body: JSON.stringify({
             role: role || 'guest', // Send the actual role or 'guest' if null
-            query: newMessage.text,
+            query: newUserMessage.text, // Send the user's query
           }),
         }
       );
@@ -163,7 +206,13 @@ const ChatPage: React.FC = () => {
         text: botResponseText,
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+      // Update the last conversation turn with the bot message
+      setMessages((prevMessages) =>
+        prevMessages.map((turn) =>
+          turn.id === userMsgId ? { ...turn, botMessage: botMessage } : turn,
+        ),
+      );
     } catch (error) {
       console.error('Error sending message to API:', error);
       const errorMessage: Message = {
@@ -171,7 +220,11 @@ const ChatPage: React.FC = () => {
         text: 'Sorry, I could not get a response. Please try again.',
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      setMessages((prevMessages) =>
+        prevMessages.map((turn) =>
+          turn.id === userMsgId ? { ...turn, botMessage: errorMessage } : turn,
+        ),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -190,9 +243,9 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 p-4 pb-[120px]">
+      <ScrollArea className="flex-1 pb-[120px]"> {/* Removed p-4 here */}
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+          <div className="flex flex-col items-center justify-center h-full text-center px-4"> {/* Keep px-4 for welcome screen */}
             <div className="mt-20 mb-6">
               <Lottie
                 animationData={animationDocument}
@@ -258,45 +311,44 @@ const ChatPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex items-start gap-3 ${
-                  message.sender === 'user' ? 'justify-end' : 'justify-start'
-                }`}
-              >
-                {message.sender === 'bot' && (
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src="/placeholder-bot.jpg" />
-                    <AvatarFallback>
-                      <Bot className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-                <div
-                  className={`max-w-[70%] p-3 rounded-lg ${
-                    message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-br-none'
-                      : 'bg-muted text-muted-foreground rounded-bl-none'
-                  }`}
-                >
-                  {renderTextWithNewlinesAndCode(message.text)}
+          <div className="space-y-8 p-4"> {/* Added p-4 here to the content wrapper */}
+            {messages.map((turn) => (
+              <div key={turn.id} className="relative">
+                {/* User Question - Sticky Header */}
+                <div className="sticky top-0 z-10 bg-background py-4 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-border">
+                  <div className="flex items-start gap-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>
+                        <User className="w-5 h-5" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-semibold text-lg leading-relaxed">
+                        {renderTextWithNewlinesAndCode(turn.userMessage.text)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                {message.sender === 'user' && (
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src="/placeholder-user.jpg" />
-                    <AvatarFallback>
-                      <User className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
+
+                {/* Bot Answer Section */}
+                {turn.botMessage && (
+                  <div className="mt-4 pl-11"> {/* Indent bot response by 11 units (avatar width + gap) */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bot className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-muted-foreground">Answer</span>
+                    </div>
+                    <div className="bg-muted p-3 rounded-lg text-muted-foreground"> {/* Bot response in a muted background card */}
+                      {renderTextWithNewlinesAndCode(turn.botMessage.text)}
+                    </div>
+                  </div>
                 )}
               </div>
             ))}
           </div>
         )}
         {isLoading && (
-          <div className="flex justify-start items-center gap-3 mt-4">
+          <div className="flex justify-start items-center gap-3 mt-4 p-4"> {/* Add p-4 for typing indicator */}
             <Avatar className="w-8 h-8">
               <AvatarImage src="/placeholder-bot.jpg" />
               <AvatarFallback>

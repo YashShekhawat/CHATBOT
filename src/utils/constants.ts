@@ -1,0 +1,1 @@
+export const EMPLOYEE_CHAT_HISTORY_KEY = 'employeeChatHistory';

@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, User, ArrowUp, Trash2 } from 'lucide-react';
+import { Bot, User, ArrowUp } from 'lucide-react'; // Removed Trash2
 import { useAuth } from '@/context/AuthContext';
 import animationDocument from '../../public/animation.json';
 import Lottie from 'lottie-react';
-import CodeBlock from '@/components/CodeBlock'; // Import the new CodeBlock component
-import { toast } from 'sonner'; // Import toast for notifications
+import CodeBlock from '@/components/CodeBlock';
+import { toast } from 'sonner';
+import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants'; // Import the constant
 
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
 }
-
-const EMPLOYEE_CHAT_HISTORY_KEY = 'employeeChatHistory';
 
 // Helper function to render text with newlines and code blocks
 const renderTextWithNewlinesAndCode = (text: string) => {
@@ -178,12 +177,6 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  const handleClearChat = useCallback(() => {
-    setMessages([]);
-    localStorage.removeItem(EMPLOYEE_CHAT_HISTORY_KEY);
-    toast.info("Chat history cleared!");
-  }, []);
-
   return (
     <div className="flex flex-col h-full">
       <ScrollArea className="flex-1 p-4 pb-[120px]">
@@ -333,18 +326,6 @@ const ChatPage: React.FC = () => {
             </Button>
           </form>
         </div>
-        {role === 'employee' && messages.length > 0 && (
-          <div className="flex justify-center mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleClearChat}
-              className="text-red-500 hover:text-red-600"
-            >
-              <Trash2 className="h-4 w-4 mr-2" /> Clear Chat History
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

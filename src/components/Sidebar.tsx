@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Upload, LogOut, MessageSquare, Sun, Moon } from 'lucide-react'; // Added Sun, Moon back
+import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react'; // Added Trash2
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from './theme-provider'; // Added useTheme back
+import { useTheme } from './theme-provider';
+import { toast } from 'sonner'; // Import toast
+import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants'; // Import the constant
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -12,7 +14,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout, role } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme(); // Get theme and setTheme
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -24,6 +26,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const handleClearChatHistory = () => {
+    localStorage.removeItem(EMPLOYEE_CHAT_HISTORY_KEY);
+    toast.info("Chat history cleared!");
+    if (onLinkClick) {
+      onLinkClick(); // Close sidebar sheet on mobile
+    }
+    // Optionally, navigate to chat page to force re-render and clear state
+    navigate('/chat');
   };
 
   return (
@@ -48,6 +60,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         </nav>
       </div>
       <div className="mt-auto space-y-2">
+        {role === 'employee' && ( // Conditionally render clear chat button for employees
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-red-500 hover:text-red-600"
+            onClick={handleClearChatHistory}
+          >
+            <Trash2 className="mr-2 h-4 w-4" /> Clear Chat History
+          </Button>
+        )}
         {role && ( // Conditionally render theme toggle if logged in
           <Button
             variant="ghost"

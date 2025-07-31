@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import atomOneDark from 'react-syntax-highlighter/dist/esm/styles/prism/atom-one-dark'; // Corrected import path
-import atomOneLight from 'react-syntax-highlighter/dist/esm/styles/prism/atom-one-light'; // Corrected import path
+import {
+  vscDarkPlus,
+  oneLight,
+} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Clipboard, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -16,16 +18,19 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const [copied, setCopied] = useState(false);
   const { theme } = useTheme();
 
-  const currentThemeStyle = theme === 'dark' ? atomOneDark : atomOneLight;
+  const currentThemeStyle = theme === 'dark' ? vscDarkPlus : oneLight;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopied(true);
-      toast.success('Code copied to clipboard!');
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {
-      toast.error('Failed to copy code.');
-    });
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setCopied(true);
+        toast.success('Code copied to clipboard!');
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {
+        toast.error('Failed to copy code.');
+      });
   };
 
   return (
@@ -37,8 +42,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
         wrapLines={true}
         customStyle={{
           padding: '1rem',
-          borderRadius: '0.375rem', // Tailwind 'rounded-md'
-          backgroundColor: theme === 'dark' ? '#282c34' : '#f8f8f8', // Ensure background matches theme
+          borderRadius: '0.375rem',
+          backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f8f8f8', // matches vscDarkPlus & oneLight
           overflowX: 'auto',
         }}
       >
@@ -50,7 +55,11 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
         className="absolute top-2 right-2 text-xs px-2 py-1 h-auto bg-background/50 backdrop-blur-sm hover:bg-background/70"
         onClick={handleCopy}
       >
-        {copied ? <Check className="h-4 w-4 mr-1" /> : <Clipboard className="h-4 w-4 mr-1" />}
+        {copied ? (
+          <Check className="h-4 w-4 mr-1" />
+        ) : (
+          <Clipboard className="h-4 w-4 mr-1" />
+        )}
         {copied ? 'Copied!' : 'Copy'}
       </Button>
     </div>

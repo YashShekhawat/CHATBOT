@@ -21,22 +21,30 @@ const renderTextWithNewlinesAndCode = (text: string) => {
   return parts.map((part, index) => {
     if (index % 2 === 1) {
       // This is a code block
-      const [langAndCode, ...rest] = part.split('\n');
-      const languageMatch = langAndCode.match(/^(\w+)\n/); // Check for language identifier like `json\n`
-      const language = languageMatch ? languageMatch[1] : 'plaintext';
-      const codeContent = languageMatch ? rest.join('\n') : part;
+      const lines = part.split('\n');
+      let language = 'plaintext';
+      let codeContent = part;
+
+      // Check if the first line specifies a language
+      if (lines.length > 0 && lines[0].trim().length > 0 && !lines[0].includes(' ')) {
+        // If the first line is a single word (e.g., 'javascript'), treat it as the language
+        language = lines[0].trim();
+        codeContent = lines.slice(1).join('\n'); // Remove the first line (language)
+      } else {
+        // If no language is specified, the entire part is code
+        codeContent = part;
+      }
 
       return (
-        <CodeBlock
-          key={index}
-          code={codeContent.trim()}
-          language={language}
-        />
+        <CodeBlock key={index} code={codeContent.trim()} language={language} />
       );
     } else {
       // This is regular text, handle newlines
       return part.split('\n').map((line, lineIndex) => (
-        <p key={`${index}-${lineIndex}`} className={lineIndex > 0 ? 'mt-2' : ''}>
+        <p
+          key={`${index}-${lineIndex}`}
+          className={lineIndex > 0 ? 'mt-2' : ''}
+        >
           {line}
         </p>
       ));
@@ -82,16 +90,19 @@ const ChatPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://lsryw4rfx7.execute-api.ap-south-1.amazonaws.com/bot-api-gateway-stage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          role: role || 'guest', // Send the actual role or 'guest' if null
-          query: newMessage.text,
-        }),
-      });
+      const response = await fetch(
+        'https://lsryw4rfx7.execute-api.ap-south-1.amazonaws.com/bot-api-gateway-stage/chat',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            role: role || 'guest', // Send the actual role or 'guest' if null
+            query: newMessage.text,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,7 +110,7 @@ const ChatPage: React.FC = () => {
 
       const data = await response.json();
       // Extract the output.text from the API response
-      const botResponseText = data.output?.text || 'No response from bot.'; 
+      const botResponseText = data.output?.text || 'No response from bot.';
 
       const botMessage: Message = {
         id: Date.now().toString() + '-bot',

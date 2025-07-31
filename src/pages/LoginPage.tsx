@@ -17,7 +17,7 @@ const LoginPage = () => {
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setLoginError(null);
+    setLoginError(null); // Clear previous errors
 
     try {
       const response = await fetch(
@@ -43,6 +43,7 @@ const LoginPage = () => {
       if (data.email) {
         loginAsEmployee(data.email);
       } else {
+        // Fallback if API doesn't return email, use the one entered
         loginAsEmployee(email);
       }
     } catch (error: any) {
@@ -81,7 +82,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         loginAsGuest();
-                        setLoginError(null);
+                        setLoginError(null); // Clear error on guest login attempt
                       }}
                       className="w-full py-6 text-lg"
                     >
@@ -95,7 +96,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         setShowEmployeeForm(true);
-                        setLoginError(null);
+                        setLoginError(null); // Clear error when switching to employee form
                       }}
                       variant="outline"
                       className="w-full py-6 text-lg"
@@ -148,7 +149,7 @@ const LoginPage = () => {
                       variant="link"
                       onClick={() => {
                         setShowEmployeeForm(false);
-                        setLoginError(null);
+                        setLoginError(null); // Clear error when going back
                       }}
                       className="w-full"
                       disabled={isSubmitting}

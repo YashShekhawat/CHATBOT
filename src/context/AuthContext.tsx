@@ -16,12 +16,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole>(() => {
+    // Initialize role from localStorage
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('userRole') as UserRole) || null;
     }
     return null;
   });
   const [userEmail, setUserEmail] = useState<string | null>(() => {
+    // Initialize userEmail from localStorage
     if (typeof window !== 'undefined') {
       return localStorage.getItem('userEmail') || null;
     }
@@ -29,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
   const navigate = useNavigate();
 
+  // Persist role to localStorage
   useEffect(() => {
     if (role) {
       localStorage.setItem('userRole', role);
@@ -37,6 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [role]);
 
+  // Persist userEmail to localStorage
   useEffect(() => {
     if (userEmail) {
       localStorage.setItem('userEmail', userEmail);
@@ -86,6 +90,7 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   if (!role) {
+    // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

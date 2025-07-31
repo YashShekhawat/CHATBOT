@@ -346,14 +346,14 @@ const ChatPage: React.FC = () => {
         )}
         {isLoading && (
           <div className="flex justify-start items-center gap-3 mt-4 p-4 max-w-4xl mx-auto">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <Lottie
-                animationData={animationDocument}
-                style={{ height: 50, width: 50 }}
-              />
-            </div>
+            <Avatar className="w-8 h-8">
+              <AvatarImage src="/placeholder-bot.jpg" />
+              <AvatarFallback>
+                <Bot className="w-5 h-5" />
+              </AvatarFallback>
+            </Avatar>
             <div className="max-w-[70%] p-3 rounded-lg bg-muted text-muted-foreground rounded-bl-none">
-              <p>Thinking...</p>
+              <p>Typing...</p>
             </div>
           </div>
         )}

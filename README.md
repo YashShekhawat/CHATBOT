@@ -1,1 +1,1 @@
-# Welcome to your QwikHelp app
+# Welcome to your Dyad app

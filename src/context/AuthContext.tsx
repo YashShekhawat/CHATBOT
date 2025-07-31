@@ -6,9 +6,9 @@ type UserRole = 'guest' | 'employee' | null;
 
 interface AuthContextType {
   role: UserRole;
-  userEmail: string | null; // Added userEmail to context type
+  userEmail: string | null;
   loginAsGuest: () => void;
-  loginAsEmployee: (email: string) => void; // Modified to accept the authenticated email
+  loginAsEmployee: (email: string) => void;
   logout: () => void;
 }
 
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   });
-  const [userEmail, setUserEmail] = useState<string | null>(() => { // New state for user email
+  const [userEmail, setUserEmail] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('userEmail') || null;
     }
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [role]);
 
-  useEffect(() => { // Effect to persist userEmail in local storage
+  useEffect(() => {
     if (userEmail) {
       localStorage.setItem('userEmail', userEmail);
     } else {
@@ -47,22 +47,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginAsGuest = () => {
     setRole('guest');
-    setUserEmail(null); // Guests don't have an associated email
+    setUserEmail(null);
     toast.success('Logged in as Guest!');
     navigate('/');
   };
 
-  // This function now expects the email that was successfully authenticated by the API
   const loginAsEmployee = (email: string) => {
     setRole('employee');
-    setUserEmail(email); // Store the email received from the API response
-    toast.success('Logged in as Employee!');
+    setUserEmail(email);
+    toast.success('Login successful!'); // Changed toast message here
     navigate('/');
   };
 
   const logout = () => {
     setRole(null);
-    setUserEmail(null); // Clear email on logout
+    setUserEmail(null);
     toast.info('Logged out.');
     navigate('/login');
   };

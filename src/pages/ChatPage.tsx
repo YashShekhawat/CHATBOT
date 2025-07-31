@@ -14,11 +14,28 @@ interface Message {
   sender: 'user' | 'bot';
 }
 
-// Helper function to render text with newlines as separate paragraphs
-const renderTextWithNewlines = (text: string) => {
-  return text.split('\n').map((line, index) => (
-    <p key={index} className={index > 0 ? 'mt-2' : ''}>{line}</p>
-  ));
+// Helper function to render text with newlines and code blocks
+const renderTextWithNewlinesAndCode = (text: string) => {
+  const parts = text.split('```');
+  return parts.map((part, index) => {
+    if (index % 2 === 1) {
+      // This is a code block
+      return (
+        <pre key={index} className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-x-auto my-2">
+          <code className="font-mono text-sm whitespace-pre-wrap break-words">
+            {part.trim()}
+          </code>
+        </pre>
+      );
+    } else {
+      // This is regular text, handle newlines
+      return part.split('\n').map((line, lineIndex) => (
+        <p key={`${index}-${lineIndex}`} className={lineIndex > 0 ? 'mt-2' : ''}>
+          {line}
+        </p>
+      ));
+    }
+  });
 };
 
 const ChatPage: React.FC = () => {
@@ -201,7 +218,7 @@ const ChatPage: React.FC = () => {
                       : 'bg-muted text-muted-foreground rounded-bl-none'
                   }`}
                 >
-                  {renderTextWithNewlines(message.text)}
+                  {renderTextWithNewlinesAndCode(message.text)}
                 </div>
                 {message.sender === 'user' && (
                   <Avatar className="w-8 h-8">

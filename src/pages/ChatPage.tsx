@@ -243,79 +243,81 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 pb-[120px]"> {/* Removed p-4 here */}
+      <ScrollArea className="flex-1 pb-[120px]">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4"> {/* Keep px-4 for welcome screen */}
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="mt-20 mb-6">
               <Lottie
                 animationData={animationDocument}
                 style={{ height: 100, width: 100 }}
               />
             </div>
-            <h1
-              className="text-4xl font-light text-gray-700 dark:text-gray-300 mb-6"
-              style={{ letterSpacing: '-2.3px' }}
-            >
-              How can we{' '}
-              <span className="text-4xl font-light bg-gradient-to-r from-green-400 via-green-500 to-emerald-600 bg-clip-text text-transparent">
-                assist
-              </span>{' '}
-              you today?
-            </h1>
-            <div className="mb-8 ">
-              <p
-                className="text-sm text-muted-foreground"
-                style={{ letterSpacing: '-0.2px' }}
+            <div className="max-w-3xl mx-auto"> {/* Added max-w and mx-auto */}
+              <h1
+                className="text-4xl font-light text-gray-700 dark:text-gray-300 mb-6"
+                style={{ letterSpacing: '-2.3px' }}
               >
-                Instantly get clear answers to questions about how things work,
-                how to set them up,
-                <br />
-                or how to resolve issues—no matter if it’s about an API, a step
-                in your workflow, or a tricky system configuration.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
-              <div
-                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() =>
-                  handleCardClick('What are the latest product updates?')
-                }
-              >
-                <p className="font-medium text-lg mb-1">
-                  Latest Product Updates
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Discover new features and improvements.
+                How can we{' '}
+                <span className="text-4xl font-light bg-gradient-to-r from-green-400 via-green-500 to-emerald-600 bg-clip-text text-transparent">
+                  assist
+                </span>{' '}
+                you today?
+              </h1>
+              <div className="mb-8 ">
+                <p
+                  className="text-sm text-muted-foreground"
+                  style={{ letterSpacing: '-0.2px' }}
+                >
+                  Instantly get clear answers to questions about how things work,
+                  how to set them up,
+                  <br />
+                  or how to resolve issues—no matter if it’s about an API, a step
+                  in your workflow, or a tricky system configuration.
                 </p>
               </div>
-              <div
-                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() => handleCardClick('How do I reset my password?')}
-              >
-                <p className="font-medium text-lg mb-1">Password Reset Guide</p>
-                <p className="text-sm text-muted-foreground">
-                  Step-by-step instructions for account recovery.
-                </p>
-              </div>
-              <div
-                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() =>
-                  handleCardClick('Where can I find the user manual?')
-                }
-              >
-                <p className="font-medium text-lg mb-1">User Manual Location</p>
-                <p className="text-sm text-muted-foreground">
-                  Find comprehensive guides and documentation.
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"> {/* Removed max-w-3xl here as it's on parent */}
+                <div
+                  className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                  onClick={() =>
+                    handleCardClick('What are the latest product updates?')
+                  }
+                >
+                  <p className="font-medium text-lg mb-1">
+                    Latest Product Updates
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Discover new features and improvements.
+                  </p>
+                </div>
+                <div
+                  className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                  onClick={() => handleCardClick('How do I reset my password?')}
+                >
+                  <p className="font-medium text-lg mb-1">Password Reset Guide</p>
+                  <p className="text-sm text-muted-foreground">
+                    Step-by-step instructions for account recovery.
+                  </p>
+                </div>
+                <div
+                  className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                  onClick={() =>
+                    handleCardClick('Where can I find the user manual?')
+                  }
+                >
+                  <p className="font-medium text-lg mb-1">User Manual Location</p>
+                  <p className="text-sm text-muted-foreground">
+                    Find comprehensive guides and documentation.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="space-y-8 p-4"> {/* Added p-4 here to the content wrapper */}
+          <div className="space-y-8 p-4 max-w-4xl mx-auto"> {/* Added max-w-4xl and mx-auto */}
             {messages.map((turn) => (
               <div key={turn.id} className="relative">
                 {/* User Question - Sticky Header */}
-                <div className="sticky top-0 z-10 bg-background py-4 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-border">
+                <div className="sticky top-0 z-10 bg-background py-4 px-4 border-b border-border"> {/* Adjusted padding */}
                   <div className="flex items-start gap-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src="/placeholder-user.jpg" />
@@ -338,7 +340,7 @@ const ChatPage: React.FC = () => {
                       <Bot className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm font-medium text-muted-foreground">Answer</span>
                     </div>
-                    <div className="bg-muted p-3 rounded-lg text-muted-foreground"> {/* Bot response in a muted background card */}
+                    <div className="p-3 rounded-lg text-foreground"> {/* Removed bg-muted, changed text color */}
                       {renderTextWithNewlinesAndCode(turn.botMessage.text)}
                     </div>
                   </div>
@@ -348,7 +350,7 @@ const ChatPage: React.FC = () => {
           </div>
         )}
         {isLoading && (
-          <div className="flex justify-start items-center gap-3 mt-4 p-4"> {/* Add p-4 for typing indicator */}
+          <div className="flex justify-start items-center gap-3 mt-4 p-4 max-w-4xl mx-auto"> {/* Add p-4 for typing indicator, adjusted width */}
             <Avatar className="w-8 h-8">
               <AvatarImage src="/placeholder-bot.jpg" />
               <AvatarFallback>

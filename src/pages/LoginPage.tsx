@@ -4,20 +4,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner'; // Import toast for notifications
+import { toast } from 'sonner';
 
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage loading/submitting
-  const [loginError, setLoginError] = useState<string | null>(null); // State for displaying login errors
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true); // Set submitting state to true
-    setLoginError(null); // Clear previous errors
+    setIsSubmitting(true);
+    setLoginError(null);
 
     try {
       const response = await fetch(
@@ -33,8 +33,7 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API Error Response Data:', errorData); // Log the full error response
-        // Use the message from errorData if available, otherwise a generic message
+        console.error('API Error Response Data:', errorData);
         const errorMessage =
           errorData.message || 'Login failed. Please check your credentials.';
         throw new Error(errorMessage);
@@ -82,7 +81,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         loginAsGuest();
-                        setLoginError(null); // Clear error when switching to guest
+                        setLoginError(null);
                       }}
                       className="w-full py-6 text-lg"
                     >
@@ -118,7 +117,7 @@ const LoginPage = () => {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        disabled={isSubmitting} // Disable input during submission
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-2">
@@ -129,7 +128,7 @@ const LoginPage = () => {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        disabled={isSubmitting} // Disable input during submission
+                        disabled={isSubmitting}
                       />
                       {loginError && (
                         <p className="text-sm text-red-500 mt-1">
@@ -149,10 +148,10 @@ const LoginPage = () => {
                       variant="link"
                       onClick={() => {
                         setShowEmployeeForm(false);
-                        setLoginError(null); // Clear error when going back
+                        setLoginError(null);
                       }}
                       className="w-full"
-                      disabled={isSubmitting} // Disable button during submission
+                      disabled={isSubmitting}
                     >
                       Back to options
                     </Button>
@@ -162,11 +161,10 @@ const LoginPage = () => {
             </Card>
           </div>
         </div>
-        {/* Right Section: Image/Visual */}
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
           <div className="flex justify-center">
             <img
-              src="/public/qwikchat.svg" // Placeholder image
+              src="/public/qwikchat.svg"
               alt="Visual representation"
               width="80%"
               className="max-w-full h-auto rounded-md mb-4"

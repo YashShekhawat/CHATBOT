@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +7,7 @@ import { useTheme } from './theme-provider';
 import { toast } from 'sonner';
 import { getChatHistoryKey } from '@/utils/constants';
 import { useChatHistory } from '@/context/ChatHistoryContext';
-import { cn } from '@/lib/utils'; // Import cn utility for conditional classes
+import { cn } from '@/lib/utils';
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { triggerClearChatHistory } = useChatHistory();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -36,9 +36,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     if (userEmail) {
       localStorage.removeItem(getChatHistoryKey(userEmail));
       triggerClearChatHistory();
-      toast.info("Chat history cleared!");
+      toast.info('Chat history cleared!');
     } else {
-      toast.error("Cannot clear history: No user email found.");
+      toast.error('Cannot clear history: No user email found.');
     }
     if (onLinkClick) {
       onLinkClick();
@@ -56,8 +56,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start",
-                (location.pathname === '/chat' || location.pathname === '/') && "bg-accent text-accent-foreground"
+                'w-full justify-start',
+                (location.pathname === '/chat' ||
+                  location.pathname === '/') &&
+                  'bg-accent text-accent-foreground'
               )}
             >
               <MessageSquare className="mr-2 h-4 w-4" /> Chat
@@ -68,8 +70,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start",
-                  location.pathname === '/upload' && "bg-accent text-accent-foreground"
+                  'w-full justify-start',
+                  location.pathname === '/upload' &&
+                    'bg-accent text-accent-foreground'
                 )}
               >
                 <Upload className="mr-2 h-4 w-4" /> Upload Knowledge

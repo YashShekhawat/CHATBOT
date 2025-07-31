@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginAsEmployee = (email: string) => {
     setRole('employee');
     setUserEmail(email);
-    toast.success('Login successful!'); // Changed toast message here
+    toast.success('Login successful!');
     navigate('/');
   };
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea'; // Changed from Input to Textarea
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, User, Send } from 'lucide-react';
+import { Bot, User, ArrowUp } from 'lucide-react'; // Changed Send to ArrowUp
 import { useAuth } from '@/context/AuthContext';
 
 interface Message {
@@ -17,7 +17,8 @@ const ChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { role } = useAuth(); // Corrected to 'role' as per AuthContext
+  const textareaRef = useRef<HTMLTextAreaElement>(null); // Added textareaRef
+  const { role } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +27,13 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [input]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +82,13 @@ const ChatPage: React.FC = () => {
     setInput(prompt);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(e);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <ScrollArea className="flex-1 p-4">
@@ -107,7 +122,7 @@ const ChatPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4"> {/* Corrected className- to className */}
+          <div className="space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -160,22 +175,34 @@ const ChatPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </ScrollArea>
 
-      <form onSubmit={handleSendMessage} className="flex p-4 border-t gap-2 justify-center w-full">
-        <div className="flex w-full max-w-3xl gap-2">
-          <Input
-            type="text"
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={isLoading}
-            className="bg-transparent border-none flex-1"
-          />
-          <Button type="submit" disabled={isLoading}>
-            <Send className="h-5 w-5" />
-            <span className="sr-only">Send message</span>
-          </Button>
+      {/* Reverted input area to previous styling */}
+      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64">
+        <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
+          <form
+            onSubmit={handleSendMessage}
+            className="relative flex items-end p-3"
+          >
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask me anything..."
+              className="min-h-[4rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
+              disabled={isLoading}
+              rows={1}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 rounded-full"
+              disabled={isLoading || !input.trim()}
+            >
+              <ArrowUp className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

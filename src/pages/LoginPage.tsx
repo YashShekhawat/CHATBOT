@@ -33,29 +33,27 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("API Error Response Data:", errorData); // Log the full error response
+        console.error('API Error Response Data:', errorData); // Log the full error response
         // Use the message from errorData if available, otherwise a generic message
-        const errorMessage = errorData.message || 'Login failed. Please check your credentials.';
+        const errorMessage =
+          errorData.message || 'Login failed. Please check your credentials.';
         throw new Error(errorMessage);
       }
 
       const data = await response.json();
-      // Assuming the API returns the email in the response, e.g., { success: true, email: "user@example.com" }
-      // If the API response structure is different, adjust `data.email` accordingly.
       if (data.email) {
-        loginAsEmployee(data.email); // Pass the email received from the API to AuthContext
+        loginAsEmployee(data.email);
       } else {
-        // Fallback: if API doesn't return email, use the one entered by user
         loginAsEmployee(email);
       }
-      // The loginAsEmployee function already handles navigation and success toast.
     } catch (error: any) {
       console.error('Login error caught:', error);
-      const errorMessage = error.message || 'An unexpected error occurred during login.';
-      setLoginError(errorMessage); // Set error message for UI display
-      toast.error(errorMessage); // Also show as a toast
+      const errorMessage =
+        error.message || 'An unexpected error occurred during login.';
+      setLoginError(errorMessage);
+      toast.error(errorMessage);
     } finally {
-      setIsSubmitting(false); // Reset submitting state
+      setIsSubmitting(false);
     }
   };
 
@@ -98,7 +96,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         setShowEmployeeForm(true);
-                        setLoginError(null); // Clear error when switching to employee form
+                        setLoginError(null);
                       }}
                       variant="outline"
                       className="w-full py-6 text-lg"
@@ -134,10 +132,16 @@ const LoginPage = () => {
                         disabled={isSubmitting} // Disable input during submission
                       />
                       {loginError && (
-                        <p className="text-sm text-red-500 mt-1">{loginError}</p>
+                        <p className="text-sm text-red-500 mt-1">
+                          {loginError}
+                        </p>
                       )}
                     </div>
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isSubmitting}
+                    >
                       {isSubmitting ? 'Logging in...' : 'Login'}
                     </Button>
                     <Button

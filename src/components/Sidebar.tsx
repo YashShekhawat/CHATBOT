@@ -5,18 +5,18 @@ import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './theme-provider';
 import { toast } from 'sonner';
-import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants';
-import { useChatHistory } from '@/context/ChatHistoryContext'; // Import useChatHistory
+import { getChatHistoryKey } from '@/utils/constants'; // Import the new helper
+import { useChatHistory } from '@/context/ChatHistoryContext';
 
 interface SidebarProps {
   onLinkClick?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
-  const { logout, role } = useAuth();
+  const { logout, role, userEmail } = useAuth(); // Get userEmail
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { triggerClearChatHistory } = useChatHistory(); // Use the context
+  const { triggerClearChatHistory } = useChatHistory();
 
   const handleLogout = () => {
     logout();
@@ -31,13 +31,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   };
 
   const handleClearChatHistory = () => {
-    localStorage.removeItem(EMPLOYEE_CHAT_HISTORY_KEY);
-    triggerClearChatHistory(); // Trigger the context update
-    toast.info("Chat history cleared!");
+    if (userEmail) {
+      localStorage.removeItem(getChatHistoryKey(userEmail)); // Use user-specific key
+      triggerClearChatHistory();
+      toast.info("Chat history cleared!");
+    } else {
+      toast.error("Cannot clear history: No user email found.");
+    }
     if (onLinkClick) {
       onLinkClick(); // Close sidebar sheet on mobile
     }
-    // No need to navigate here, ChatPage will react to context change
   };
 
   return (

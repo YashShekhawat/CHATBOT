@@ -5,12 +5,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bot, User, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useChatHistory } from '@/context/ChatHistoryContext'; // Import useChatHistory
+import { useChatHistory } from '@/context/ChatHistoryContext';
 import animationDocument from '../../public/animation.json';
 import Lottie from 'lottie-react';
 import CodeBlock from '@/components/CodeBlock';
 import { toast } from 'sonner';
-import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants';
+import { getChatHistoryKey } from '@/utils/constants'; // Import the new helper
 
 interface Message {
   id: string;
@@ -29,7 +29,11 @@ const renderTextWithNewlinesAndCode = (text: string) => {
       let codeContent = part;
 
       // Check if the first line specifies a language
-      if (lines.length > 0 && lines[0].trim().length > 0 && !lines[0].includes(' ')) {
+      if (
+        lines.length > 0 &&
+        lines[0].trim().length > 0 &&
+        !lines[0].includes(' ')
+      ) {
         // If the first line is a single word (e.g., 'javascript'), treat it as the language
         language = lines[0].trim();
         codeContent = lines.slice(1).join('\n'); // Remove the first line (language)
@@ -61,49 +65,51 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { role } = useAuth();
-  const { clearHistoryTrigger } = useChatHistory(); // Get the trigger from context
+  const { role, userEmail } = useAuth(); // Get userEmail from AuthContext
+  const { clearHistoryTrigger } = useChatHistory();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Load messages from local storage on component mount for employees
-  // Now also depends on clearHistoryTrigger to react to clear events
   useEffect(() => {
-    if (role === 'employee') {
+    if (role === 'employee' && userEmail) {
+      const historyKey = getChatHistoryKey(userEmail);
       try {
-        const storedMessages = localStorage.getItem(EMPLOYEE_CHAT_HISTORY_KEY);
+        const storedMessages = localStorage.getItem(historyKey);
         if (storedMessages) {
           setMessages(JSON.parse(storedMessages));
         } else {
-          // If no stored messages (or cleared), ensure state is empty
           setMessages([]);
         }
       } catch (error) {
-        console.error("Failed to load chat history from local storage:", error);
-        toast.error("Failed to load chat history.");
+        console.error('Failed to load chat history from local storage:', error);
+        toast.error('Failed to load chat history.');
       }
     } else {
-      // Clear messages if not an employee (e.g., guest or logged out)
+      // Clear messages if not an employee or no userEmail (e.g., guest or logged out)
       setMessages([]);
     }
-  }, [role, clearHistoryTrigger]); // Add clearHistoryTrigger to dependencies
+  }, [role, userEmail, clearHistoryTrigger]); // Add userEmail to dependencies
 
   // Save messages to local storage whenever messages state changes for employees
   useEffect(() => {
-    if (role === 'employee' && messages.length > 0) {
+    if (role === 'employee' && userEmail) {
+      const historyKey = getChatHistoryKey(userEmail);
       try {
-        localStorage.setItem(EMPLOYEE_CHAT_HISTORY_KEY, JSON.stringify(messages));
+        if (messages.length > 0) {
+          localStorage.setItem(historyKey, JSON.stringify(messages));
+        } else {
+          // If messages become empty for an employee, clear local storage
+          localStorage.removeItem(historyKey);
+        }
       } catch (error) {
-        console.error("Failed to save chat history to local storage:", error);
-        toast.error("Failed to save chat history.");
+        console.error('Failed to save chat history to local storage:', error);
+        toast.error('Failed to save chat history.');
       }
-    } else if (role === 'employee' && messages.length === 0) {
-      // If messages become empty for an employee, clear local storage
-      localStorage.removeItem(EMPLOYEE_CHAT_HISTORY_KEY);
     }
-  }, [messages, role]);
+  }, [messages, role, userEmail]); // Add userEmail to dependencies
 
   useEffect(() => {
     scrollToBottom();
@@ -150,7 +156,6 @@ const ChatPage: React.FC = () => {
       }
 
       const data = await response.json();
-      // Extract the output.text from the API response
       const botResponseText = data.output?.text || 'No response from bot.';
 
       const botMessage: Message = {

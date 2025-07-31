@@ -166,7 +166,6 @@ const ChatPage: React.FC = () => {
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1"
           disabled={isLoading}
         />
         <Button type="submit" disabled={isLoading}>

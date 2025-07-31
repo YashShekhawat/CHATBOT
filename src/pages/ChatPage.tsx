@@ -5,6 +5,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bot, User, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import animationDocument from '../../public/animation.json';
+import Lottie from 'lottie-react';
 
 interface Message {
   id: string;
@@ -49,27 +51,36 @@ const ChatPage: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    // Simulate API call
-    // TODO: Replace with actual backend API call
     try {
-      const response = await new Promise<string>((resolve) => {
-        setTimeout(() => {
-          const botResponse = `Echoing "${newMessage.text}". Your role is: ${role || 'unknown'}.`;
-          resolve(botResponse);
-        }, 1000);
+      const response = await fetch('https://lsryw4rfx7.execute-api.ap-south-1.amazonaws.com/bot-api-gateway-stage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: role || 'guest', // Send the actual role or 'guest' if null
+          query: newMessage.text,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const botResponseText = data.response || 'No response from bot.'; // Assuming the response has a 'response' field
 
       const botMessage: Message = {
         id: Date.now().toString() + '-bot',
-        text: response,
+        text: botResponseText,
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
-      console.error('Error simulating API call:', error);
+      console.error('Error sending message to API:', error);
       const errorMessage: Message = {
         id: Date.now().toString() + '-error',
-        text: 'Sorry, something went wrong. Please try again.',
+        text: 'Sorry, I could not get a response. Please try again.',
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
@@ -91,33 +102,70 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 p-4 pb-[120px]"> {/* Added pb-[120px] */}
+      <ScrollArea className="flex-1 p-4 pb-[120px]">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
-            <h1 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-6">
-              How can we assist you today?
+            <div className="mt-20 mb-6">
+              <Lottie
+                animationData={animationDocument}
+                style={{ height: 100, width: 100 }}
+              />
+            </div>
+            <h1
+              className="text-4xl font-light text-gray-700 dark:text-gray-300 mb-6"
+              style={{ letterSpacing: '-2.3px' }}
+            >
+              How can we{' '}
+              <span className="text-4xl font-light bg-gradient-to-r from-green-400 via-green-500 to-emerald-600 bg-clip-text text-transparent">
+                assist
+              </span>{' '}
+              you today?
             </h1>
+            <div className="mb-8 ">
+              <p
+                className="text-sm text-muted-foreground"
+                style={{ letterSpacing: '-0.2px' }}
+              >
+                Instantly get clear answers to questions about how things work,
+                how to set them up,
+                <br />
+                or how to resolve issues—no matter if it’s about an API, a step
+                in your workflow, or a tricky system configuration.
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
               <div
                 className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() => handleCardClick("What are the latest product updates?")}
+                onClick={() =>
+                  handleCardClick('What are the latest product updates?')
+                }
               >
-                <p className="font-medium text-lg mb-1">Latest Product Updates</p>
-                <p className="text-sm text-muted-foreground">Discover new features and improvements.</p>
+                <p className="font-medium text-lg mb-1">
+                  Latest Product Updates
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Discover new features and improvements.
+                </p>
               </div>
               <div
                 className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() => handleCardClick("How do I reset my password?")}
+                onClick={() => handleCardClick('How do I reset my password?')}
               >
                 <p className="font-medium text-lg mb-1">Password Reset Guide</p>
-                <p className="text-sm text-muted-foreground">Step-by-step instructions for account recovery.</p>
+                <p className="text-sm text-muted-foreground">
+                  Step-by-step instructions for account recovery.
+                </p>
               </div>
               <div
                 className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                onClick={() => handleCardClick("Where can I find the user manual?")}
+                onClick={() =>
+                  handleCardClick('Where can I find the user manual?')
+                }
               >
                 <p className="font-medium text-lg mb-1">User Manual Location</p>
-                <p className="text-sm text-muted-foreground">Find comprehensive guides and documentation.</p>
+                <p className="text-sm text-muted-foreground">
+                  Find comprehensive guides and documentation.
+                </p>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/styles/prism'; // Corrected import path
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Corrected import path
 import { Clipboard, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';

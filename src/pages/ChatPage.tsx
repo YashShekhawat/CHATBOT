@@ -7,6 +7,7 @@ import { Bot, User, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import animationDocument from '../../public/animation.json';
 import Lottie from 'lottie-react';
+import CodeBlock from '@/components/CodeBlock'; // Import the new CodeBlock component
 
 interface Message {
   id: string;
@@ -20,12 +21,17 @@ const renderTextWithNewlinesAndCode = (text: string) => {
   return parts.map((part, index) => {
     if (index % 2 === 1) {
       // This is a code block
+      const [langAndCode, ...rest] = part.split('\n');
+      const languageMatch = langAndCode.match(/^(\w+)\n/); // Check for language identifier like `json\n`
+      const language = languageMatch ? languageMatch[1] : 'plaintext';
+      const codeContent = languageMatch ? rest.join('\n') : part;
+
       return (
-        <pre key={index} className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-x-auto my-2">
-          <code className="font-mono text-sm whitespace-pre-wrap break-words">
-            {part.trim()}
-          </code>
-        </pre>
+        <CodeBlock
+          key={index}
+          code={codeContent.trim()}
+          language={language}
+        />
       );
     } else {
       // This is regular text, handle newlines

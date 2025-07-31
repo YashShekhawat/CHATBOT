@@ -17,7 +17,7 @@ const ChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { role } = useAuth(); // Correctly get the user role
+  const { role } = useAuth(); // Corrected to 'role' as per AuthContext
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -12,10 +12,12 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false); // State to manage loading/submitting
+  const [loginError, setLoginError] = useState<string | null>(null); // State for displaying login errors
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true); // Set submitting state to true
+    setLoginError(null); // Clear previous errors
 
     try {
       const response = await fetch(
@@ -49,8 +51,9 @@ const LoginPage = () => {
       // The loginAsEmployee function already handles navigation and success toast.
     } catch (error: any) {
       console.error('Login error caught:', error);
-      // Ensure the toast displays the error message from the thrown Error object
-      toast.error(error.message || 'An unexpected error occurred during login.');
+      const errorMessage = error.message || 'An unexpected error occurred during login.';
+      setLoginError(errorMessage); // Set error message for UI display
+      toast.error(errorMessage); // Also show as a toast
     } finally {
       setIsSubmitting(false); // Reset submitting state
     }
@@ -79,7 +82,10 @@ const LoginPage = () => {
                 {!showEmployeeForm ? (
                   <div className="space-y-4">
                     <Button
-                      onClick={loginAsGuest}
+                      onClick={() => {
+                        loginAsGuest();
+                        setLoginError(null); // Clear error when switching to guest
+                      }}
                       className="w-full py-6 text-lg"
                     >
                       Continue as Guest
@@ -90,7 +96,10 @@ const LoginPage = () => {
                       <div className="flex-grow border-t border-gray-300"></div>
                     </div>
                     <Button
-                      onClick={() => setShowEmployeeForm(true)}
+                      onClick={() => {
+                        setShowEmployeeForm(true);
+                        setLoginError(null); // Clear error when switching to employee form
+                      }}
                       variant="outline"
                       className="w-full py-6 text-lg"
                     >
@@ -124,6 +133,9 @@ const LoginPage = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         disabled={isSubmitting} // Disable input during submission
                       />
+                      {loginError && (
+                        <p className="text-sm text-red-500 mt-1">{loginError}</p>
+                      )}
                     </div>
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
                       {isSubmitting ? 'Logging in...' : 'Login'}
@@ -131,7 +143,10 @@ const LoginPage = () => {
                     <Button
                       type="button"
                       variant="link"
-                      onClick={() => setShowEmployeeForm(false)}
+                      onClick={() => {
+                        setShowEmployeeForm(false);
+                        setLoginError(null); // Clear error when going back
+                      }}
                       className="w-full"
                       disabled={isSubmitting} // Disable button during submission
                     >

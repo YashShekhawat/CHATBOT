@@ -14,6 +14,13 @@ interface Message {
   sender: 'user' | 'bot';
 }
 
+// Helper function to render text with newlines as separate paragraphs
+const renderTextWithNewlines = (text: string) => {
+  return text.split('\n').map((line, index) => (
+    <p key={index} className={index > 0 ? 'mt-2' : ''}>{line}</p>
+  ));
+};
+
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -68,7 +75,8 @@ const ChatPage: React.FC = () => {
       }
 
       const data = await response.json();
-      const botResponseText = data.response || 'No response from bot.'; // Assuming the response has a 'response' field
+      // Extract the output.text from the API response
+      const botResponseText = data.output?.text || 'No response from bot.'; 
 
       const botMessage: Message = {
         id: Date.now().toString() + '-bot',
@@ -193,7 +201,7 @@ const ChatPage: React.FC = () => {
                       : 'bg-muted text-muted-foreground rounded-bl-none'
                   }`}
                 >
-                  <p>{message.text}</p>
+                  {renderTextWithNewlines(message.text)}
                 </div>
                 {message.sender === 'user' && (
                   <Avatar className="w-8 h-8">

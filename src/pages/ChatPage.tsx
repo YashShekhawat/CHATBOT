@@ -280,8 +280,6 @@ const ChatPage: React.FC = () => {
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                {' '}
-                {/* Removed max-w-3xl here as it's on parent */}
                 <div
                   className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
                   onClick={() =>
@@ -374,15 +372,13 @@ const ChatPage: React.FC = () => {
         )}
         {isLoading && (
           <div className="flex justify-start items-center gap-3 mt-4 p-4 max-w-4xl mx-auto">
-            {' '}
-            {/* Add p-4 for typing indicator, adjusted width */}
-            <div className="w-8 h-8 flex items-center justify-center"> {/* Container for Lottie */}
+            <div className="w-12 h-12 flex items-center justify-center">
               <Lottie
                 animationData={animationDocument}
-                style={{ height: 50, width: 50 }}
+                style={{ height: 200, width: 100 }}
               />
             </div>
-            <div className="max-w-[70%] p-3 rounded-lg bg-muted text-muted-foreground rounded-bl-none">
+            <div className="text-base max-w-[80%] p-3">
               <p>Thinking...</p>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Clipboard, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -10,6 +11,20 @@ interface CodeBlockProps {
   code: string;
   language: string;
 }
+
+const normalizeLanguage = (lang: string) => {
+  const map: Record<string, string> = {
+    js: 'javascript',
+    ts: 'typescript',
+    py: 'python',
+    sh: 'bash',
+    html: 'markup',
+    yml: 'yaml',
+    md: 'markdown',
+    json: 'json',
+  };
+  return map[lang?.toLowerCase()] || lang?.toLowerCase() || 'text';
+};
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const [copied, setCopied] = useState(false);
@@ -29,18 +44,29 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   };
 
   return (
-    <div className="relative my-2 rounded-md overflow-hidden">
+    <div className="relative my-4 rounded-md overflow-hidden border border-border">
       <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
+        language="json"
+        style={dracula}
         showLineNumbers={false}
         wrapLines={true}
         customStyle={{
           padding: '1rem',
           borderRadius: '0.5rem',
-          backgroundColor: '#1e1e1e',
+          background: '#1e1e1e', // background color to override theme background
+          // Removed explicit color to allow Prism syntax coloring to take effect
           fontSize: '0.875rem',
+          fontFamily: '"Fira Code", Menlo, Consolas, monospace',
+          lineHeight: '1.6',
           overflowX: 'auto',
+          margin: 0,
+          // Optionally you can add boxShadow for nicer UI
+          // boxShadow: '0 2px 8px rgba(0,0,0,0.7)'
+        }}
+        codeTagProps={{
+          style: {
+            fontFamily: '"Fira Code", Menlo, Consolas, monospace',
+          },
         }}
       >
         {code}

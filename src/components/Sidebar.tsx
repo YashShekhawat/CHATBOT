@@ -1,22 +1,24 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { Button } from './ui/button';
 import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './theme-provider';
 import { toast } from 'sonner';
-import { getChatHistoryKey } from '@/utils/constants'; // Import the new helper
+import { getChatHistoryKey } from '@/utils/constants';
 import { useChatHistory } from '@/context/ChatHistoryContext';
+import { cn } from '@/lib/utils'; // Import cn utility for conditional classes
 
 interface SidebarProps {
   onLinkClick?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
-  const { logout, role, userEmail } = useAuth(); // Get userEmail
+  const { logout, role, userEmail } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { triggerClearChatHistory } = useChatHistory();
+  const location = useLocation(); // Get current location
 
   const handleLogout = () => {
     logout();
@@ -32,14 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
 
   const handleClearChatHistory = () => {
     if (userEmail) {
-      localStorage.removeItem(getChatHistoryKey(userEmail)); // Use user-specific key
+      localStorage.removeItem(getChatHistoryKey(userEmail));
       triggerClearChatHistory();
       toast.info("Chat history cleared!");
     } else {
       toast.error("Cannot clear history: No user email found.");
     }
     if (onLinkClick) {
-      onLinkClick(); // Close sidebar sheet on mobile
+      onLinkClick();
     }
   };
 
@@ -51,13 +53,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         </h2>
         <nav className="space-y-2">
           <Link to="/chat" onClick={onLinkClick}>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full justify-start",
+                (location.pathname === '/chat' || location.pathname === '/') && "bg-accent text-accent-foreground"
+              )}
+            >
               <MessageSquare className="mr-2 h-4 w-4" /> Chat
             </Button>
           </Link>
           {role === 'employee' && (
             <Link to="/upload" onClick={onLinkClick}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button
+                variant="ghost"
+                className={cn(
+                  "w-full justify-start",
+                  location.pathname === '/upload' && "bg-accent text-accent-foreground"
+                )}
+              >
                 <Upload className="mr-2 h-4 w-4" /> Upload Knowledge
               </Button>
             </Link>

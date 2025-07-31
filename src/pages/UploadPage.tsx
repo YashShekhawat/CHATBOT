@@ -8,10 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { UploadCloud } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner"; // Ensure sonner toast is imported
+import { toast } from "sonner";
 import { useAuth } from '@/context/AuthContext';
 
 const UploadPage = () => {
@@ -33,10 +32,6 @@ const UploadPage = () => {
 
     const formData = new FormData(event.currentTarget);
     const file = formData.get('file') as File;
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const userName = formData.get('userName') as string;
-    const userEmail = formData.get('userEmail') as string;
 
     if (!file) {
       toast.error("Please select a file to upload.");
@@ -55,11 +50,7 @@ const UploadPage = () => {
           file_content: base64String,
           file_name: fileNameWithoutExt,
           file_type: fileType,
-          title: title,
-          description: description,
-          user_name: userName,
-          user_email: userEmail,
-          user_role: role || 'unknown',
+          user_role: role || 'unknown', // Include user role
         };
 
         const response = await fetch('https://your-api-id.execute-api.region.amazonaws.com/dev/upload', {
@@ -134,54 +125,6 @@ const UploadPage = () => {
                   onChange={handleFileChange}
                 />
               </Label>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold">Details</h3>
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  placeholder="e.g., Q3 Financial Report"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  placeholder="A brief summary of the document's content."
-                  required
-                  rows={3}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold">Submitted By</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="userName">User Name</Label>
-                  <Input
-                    id="userName"
-                    name="userName"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="userEmail">User Email</Label>
-                  <Input
-                    id="userEmail"
-                    name="userEmail"
-                    type="email"
-                    placeholder="john.doe@example.com"
-                    required
-                  />
-                </div>
-              </div>
             </div>
 
             <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>

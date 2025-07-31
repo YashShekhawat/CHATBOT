@@ -3,13 +3,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, User, ArrowUp } from 'lucide-react'; // Removed Trash2
+import { Bot, User, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useChatHistory } from '@/context/ChatHistoryContext'; // Import useChatHistory
 import animationDocument from '../../public/animation.json';
 import Lottie from 'lottie-react';
 import CodeBlock from '@/components/CodeBlock';
 import { toast } from 'sonner';
-import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants'; // Import the constant
+import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants';
 
 interface Message {
   id: string;
@@ -61,18 +62,23 @@ const ChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { role } = useAuth();
+  const { clearHistoryTrigger } = useChatHistory(); // Get the trigger from context
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Load messages from local storage on component mount for employees
+  // Now also depends on clearHistoryTrigger to react to clear events
   useEffect(() => {
     if (role === 'employee') {
       try {
         const storedMessages = localStorage.getItem(EMPLOYEE_CHAT_HISTORY_KEY);
         if (storedMessages) {
           setMessages(JSON.parse(storedMessages));
+        } else {
+          // If no stored messages (or cleared), ensure state is empty
+          setMessages([]);
         }
       } catch (error) {
         console.error("Failed to load chat history from local storage:", error);
@@ -82,7 +88,7 @@ const ChatPage: React.FC = () => {
       // Clear messages if not an employee (e.g., guest or logged out)
       setMessages([]);
     }
-  }, [role]);
+  }, [role, clearHistoryTrigger]); // Add clearHistoryTrigger to dependencies
 
   // Save messages to local storage whenever messages state changes for employees
   useEffect(() => {

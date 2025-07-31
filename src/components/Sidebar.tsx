@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react'; // Added Trash2
+import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './theme-provider';
-import { toast } from 'sonner'; // Import toast
-import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants'; // Import the constant
+import { toast } from 'sonner';
+import { EMPLOYEE_CHAT_HISTORY_KEY } from '@/utils/constants';
+import { useChatHistory } from '@/context/ChatHistoryContext'; // Import useChatHistory
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -15,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout, role } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { triggerClearChatHistory } = useChatHistory(); // Use the context
 
   const handleLogout = () => {
     logout();
@@ -30,12 +32,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
 
   const handleClearChatHistory = () => {
     localStorage.removeItem(EMPLOYEE_CHAT_HISTORY_KEY);
+    triggerClearChatHistory(); // Trigger the context update
     toast.info("Chat history cleared!");
     if (onLinkClick) {
       onLinkClick(); // Close sidebar sheet on mobile
     }
-    // Optionally, navigate to chat page to force re-render and clear state
-    navigate('/chat');
+    // No need to navigate here, ChatPage will react to context change
   };
 
   return (
@@ -60,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         </nav>
       </div>
       <div className="mt-auto space-y-2">
-        {role === 'employee' && ( // Conditionally render clear chat button for employees
+        {role === 'employee' && (
           <Button
             variant="ghost"
             className="w-full justify-start text-red-500 hover:text-red-600"
@@ -69,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
             <Trash2 className="mr-2 h-4 w-4" /> Clear Chat History
           </Button>
         )}
-        {role && ( // Conditionally render theme toggle if logged in
+        {role && (
           <Button
             variant="ghost"
             className="w-full justify-start"

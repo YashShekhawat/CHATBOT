@@ -29,7 +29,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   return (
     <div className="flex flex-col h-full p-4 border-r border-border bg-background text-foreground">
       <div className="flex-grow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Chat App</h2>
+        <h2 className="text-2xl font-bold m-2 mb-7 text-center">
+          <img src="/public/logo.png" alt="" width="150px" />
+        </h2>
         <nav className="space-y-2">
           <Link to="/chat" onClick={onLinkClick}>
             <Button variant="ghost" className="w-full justify-start">
@@ -47,7 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
       </div>
       <div className="mt-auto space-y-2">
         {role && ( // Conditionally render theme toggle if logged in
-          <Button variant="ghost" className="w-full justify-start" onClick={toggleTheme}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={toggleTheme}
+          >
             {theme === 'light' ? (
               <Moon className="mr-2 h-4 w-4" />
             ) : (
@@ -57,7 +63,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           </Button>
         )}
         {role && (
-          <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600" onClick={handleLogout}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-red-500 hover:text-red-600"
+            onClick={handleLogout}
+          >
             <LogOut className="mr-2 h-4 w-4" /> Logout
           </Button>
         )}

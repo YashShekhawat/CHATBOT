@@ -1,173 +1,179 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import React, { useState, useEffect, useRef } from 'react';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { BotMessageSquare, ArrowUp } from 'lucide-react';
-// Removed ScrollArea import as we're using a plain div for scrolling
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Bot, User, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Textarea } from '@/components/ui/textarea';
 
 interface Message {
+  id: string;
   text: string;
   sender: 'user' | 'bot';
 }
 
-const ChatPage = () => {
-  const { role } = useAuth();
+const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null); // Ref for the scrollable div
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { userRole } = useAuth();
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    // Scroll to the bottom whenever messages change
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
+    scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [input]);
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.trim() === '') return;
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text: input,
+      sender: 'user',
+    };
 
-    const currentInput = input;
-    const userMessage: Message = { text: currentInput, sender: 'user' };
-
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInput('');
     setIsLoading(true);
 
-    // --- API INTEGRATION POINT ---
+    // Simulate API call
+    // TODO: Replace with actual backend API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await new Promise<string>((resolve) => {
+        setTimeout(() => {
+          const botResponse = `Echoing "${newMessage.text}". Your role is: ${userRole}.`;
+          resolve(botResponse);
+        }, 1000);
+      });
+
       const botMessage: Message = {
-        text: `This is a simulated response to: "${currentInput}" (Role: ${
-          role || 'unknown'
-        }).`,
+        id: Date.now().toString() + '-bot',
+        text: response,
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
-      console.error('Failed to fetch chat response:', error);
+      console.error('Error simulating API call:', error);
       const errorMessage: Message = {
-        text: "Sorry, I couldn't get a response. Please try again.",
+        id: Date.now().toString() + '-error',
+        text: 'Sorry, something went wrong. Please try again.',
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
-      setIsLoading(false); // Corrected from setIsSubmitting
+      setIsLoading(false);
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      handleSend();
-    }
+  const handleCardClick = (prompt: string) => {
+    setInput(prompt);
   };
 
   return (
-    <div className="relative h-screen flex flex-col bg-muted/40">
-      {/* Main chat content area */}
-      <div className="flex-1 p-4 md:p-6 pb-28 overflow-y-auto" ref={scrollAreaRef}> {/* Changed to div with overflow-y-auto */}
+    <div className="flex flex-col h-full">
+      <ScrollArea className="flex-1 p-4">
         {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center px-4">
-            <BotMessageSquare className="h-20 w-20 mb-6 text-primary/50" />
-            <h2 className="text-3xl font-bold mb-3">Chatbot Ready</h2>
-            <p className="text-lg text-muted-foreground max-w-md mt-2">
-              Ask me anything or start by uploading knowledge.
-            </p>
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+            <h1 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-6">
+              How can we assist you today?
+            </h1>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
+              <div
+                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                onClick={() => handleCardClick("What are the latest product updates?")}
+              >
+                <p className="font-medium text-lg mb-1">Latest Product Updates</p>
+                <p className="text-sm text-muted-foreground">Discover new features and improvements.</p>
+              </div>
+              <div
+                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                onClick={() => handleCardClick("How do I reset my password?")}
+              >
+                <p className="font-medium text-lg mb-1">Password Reset Guide</p>
+                <p className="text-sm text-muted-foreground">Step-by-step instructions for account recovery.</p>
+              </div>
+              <div
+                className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                onClick={() => handleCardClick("Where can I find the user manual?")}
+              >
+                <p className="font-medium text-lg mb-1">User Manual Location</p>
+                <p className="text-sm text-muted-foreground">Find comprehensive guides and documentation.</p>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            {messages.map((message, index) => (
+          <div className-="space-y-4">
+            {messages.map((message) => (
               <div
-                key={index}
-                className={`flex items-start gap-3 animate-in fade-in-50 slide-in-from-bottom-2 duration-500 ${
-                  message.sender === 'user' ? 'justify-end' : ''
+                key={message.id}
+                className={`flex items-start gap-3 ${
+                  message.sender === 'user' ? 'justify-end' : 'justify-start'
                 }`}
               >
                 {message.sender === 'bot' && (
-                  <Avatar className="border w-9 h-9 flex-shrink-0">
-                    <AvatarFallback>AI</AvatarFallback>
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src="/placeholder-bot.jpg" />
+                    <AvatarFallback>
+                      <Bot className="w-5 h-5" />
+                    </AvatarFallback>
                   </Avatar>
                 )}
                 <div
-                  className={`rounded-lg p-3 max-w-[75%] ${
+                  className={`max-w-[70%] p-3 rounded-lg ${
                     message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-card border'
+                      ? 'bg-primary text-primary-foreground rounded-br-none'
+                      : 'bg-muted text-muted-foreground rounded-bl-none'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">
-                    {message.text}
-                  </p>
+                  <p>{message.text}</p>
                 </div>
                 {message.sender === 'user' && (
-                  <Avatar className="border w-9 h-9 flex-shrink-0">
-                    <AvatarFallback>U</AvatarFallback>
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarFallback>
+                      <User className="w-5 h-5" />
+                    </AvatarFallback>
                   </Avatar>
                 )}
               </div>
             ))}
-            {isLoading && (
-              <div className="flex items-start gap-3">
-                <Avatar className="border w-9 h-9">
-                  <AvatarFallback>AI</AvatarFallback>
-                </Avatar>
-                <div className="rounded-lg p-3 bg-card border">
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
-      </div>
+        {isLoading && (
+          <div className="flex justify-start items-center gap-3 mt-4">
+            <Avatar className="w-8 h-8">
+              <AvatarImage src="/placeholder-bot.jpg" />
+              <AvatarFallback>
+                <Bot className="w-5 h-5" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="max-w-[70%] p-3 rounded-lg bg-muted text-muted-foreground rounded-bl-none">
+              <p>Typing...</p>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </ScrollArea>
 
-      {/* Fixed input area at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64">
-        <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="relative flex items-end p-3"
-          >
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask me anything..."
-              className="min-h-[4rem] max-h-[10rem] resize-none pr-12 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base overflow-y-auto"
-              disabled={isLoading}
-              rows={1}
-            />
-            <Button
-              type="submit"
-              size="icon"
-              className="absolute top-1/2 -translate-y-1/2 right-3 h-8 w-8 rounded-full"
-              disabled={isLoading || !input.trim()}
-            >
-              <ArrowUp className="h-4 w-4" />
-            </Button>
-          </form>
-        </div>
-      </div>
+      <form onSubmit={handleSendMessage} className="flex p-4 border-t gap-2">
+        <Input
+          type="text"
+          placeholder="Type your message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="flex-1"
+          disabled={isLoading}
+        />
+        <Button type="submit" disabled={isLoading}>
+          <Send className="h-5 w-5" />
+          <span className="sr-only">Send message</span>
+        </Button>
+      </form>
     </div>
   );
 };

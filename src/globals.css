@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
+
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -13,13 +14,15 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 142.1 76.2% 36.3%; /* Changed to a vibrant green */
-    --primary-foreground: 210 40% 98%; /* Text color for primary, usually white/light */
+    --primary: 142.1 88.34% 19.06%;
+    /* Changed to a vibrant green */
+    --primary-foreground: 210 40% 98%;
+    /* Text color for primary, usually white/light */
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 118.52 100% 95.71%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 210 40% 96.1%;
@@ -61,7 +64,8 @@
     --popover: 0 0% 10.6%;
     --popover-foreground: 0 0% 87.8%;
 
-    --primary: 142.1 70.2% 28.3%; /* Darker green for dark mode primary */
+    --primary: 142.1 70.2% 28.3%;
+    /* Darker green for dark mode primary */
     --primary-foreground: 0 0% 87.8%;
 
     --secondary: 0 0% 26.7%;
@@ -97,7 +101,7 @@
 
     body {
       @apply bg-background text-foreground;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Geist', sans-serif;
     }
   }
 }

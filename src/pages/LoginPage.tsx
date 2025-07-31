@@ -24,19 +24,21 @@ const LoginPage = () => {
       {/* Changed to h-screen and flex-col */}
       <div className="grid grid-cols-1 md:grid-cols-2 w-full flex-grow rounded-xl overflow-hidden">
         {' '}
-        {/* Changed h-full to flex-grow */}
-        {/* Left Section: Login Form */}
         <div className="bg-background p-8 md:p-12 flex flex-col justify-center items-center text-center md:text-left h-full">
           {' '}
           {/* Added h-full */}
           <div className="w-full max-w-sm">
             <div className="mb-8">
-              <BotMessageSquare className="h-16 w-16 mx-auto md:mx-0 mb-4 text-primary" />
-              <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-2">
-                Your ideas, amplified
+              <div className="mb-16">
+                <img src="/public/logo.png" alt="" width="190px" />
+              </div>
+              {/* <BotMessageSquare className="h-16 w-16 mx-auto md:mx-0 mb-4 text-primary" /> */}
+              <h1 className="text-5xl font-semibold tracking-tight leading-12  mb-2">
+                Have Issues? <br />
+                Ask our AI
               </h1>
               <p className="text-lg text-muted-foreground">
-                Privacy-first AI that helps you create in confidence.
+                Instant solutions, one question away.
               </p>
             </div>
 
@@ -110,18 +112,13 @@ const LoginPage = () => {
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
           {' '}
           {/* Added h-full and removed min-h classes */}
-          <div className="bg-card p-6 rounded-lg shadow-xl flex flex-col items-center justify-center text-center">
+          <div className="flex justify-center">
             <img
-              src="https://via.placeholder.com/400x300/F0F0F0/333333?text=Your+Image+Here" // Placeholder image
+              src="/public/qwikchat.svg" // Placeholder image
               alt="Visual representation"
+              width="80%"
               className="max-w-full h-auto rounded-md mb-4"
             />
-            <p className="text-lg font-semibold text-foreground">
-              Visualize your data with AI
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Upload an image to see how AI can enhance your experience.
-            </p>
           </div>
         </div>
       </div>

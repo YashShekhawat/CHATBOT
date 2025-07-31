@@ -57,6 +57,7 @@ const renderTextWithNewlinesAndCode = (text: string) => {
         <p
           key={`${index}-${lineIndex}`}
           className={lineIndex > 0 ? 'mt-2' : ''}
+          style={{ letterSpacing: '-0.1px' }}
         >
           {line}
         </p>
@@ -85,8 +86,9 @@ const ChatPage: React.FC = () => {
       try {
         const storedMessages = localStorage.getItem(historyKey);
         if (storedMessages) {
-          const parsedMessages: Message[] | ConversationTurn[] = JSON.parse(storedMessages);
-          
+          const parsedMessages: Message[] | ConversationTurn[] =
+            JSON.parse(storedMessages);
+
           // Check if it's the old Message[] format and convert
           if (parsedMessages.length > 0 && 'sender' in parsedMessages[0]) {
             const convertedTurns: ConversationTurn[] = [];
@@ -210,8 +212,8 @@ const ChatPage: React.FC = () => {
       // Update the last conversation turn with the bot message
       setMessages((prevMessages) =>
         prevMessages.map((turn) =>
-          turn.id === userMsgId ? { ...turn, botMessage: botMessage } : turn,
-        ),
+          turn.id === userMsgId ? { ...turn, botMessage: botMessage } : turn
+        )
       );
     } catch (error) {
       console.error('Error sending message to API:', error);
@@ -222,8 +224,8 @@ const ChatPage: React.FC = () => {
       };
       setMessages((prevMessages) =>
         prevMessages.map((turn) =>
-          turn.id === userMsgId ? { ...turn, botMessage: errorMessage } : turn,
-        ),
+          turn.id === userMsgId ? { ...turn, botMessage: errorMessage } : turn
+        )
       );
     } finally {
       setIsLoading(false);
@@ -252,7 +254,9 @@ const ChatPage: React.FC = () => {
                 style={{ height: 100, width: 100 }}
               />
             </div>
-            <div className="max-w-3xl mx-auto"> {/* Added max-w and mx-auto */}
+            <div className="max-w-3xl mx-auto">
+              {' '}
+              {/* Added max-w and mx-auto */}
               <h1
                 className="text-4xl font-light text-gray-700 dark:text-gray-300 mb-6"
                 style={{ letterSpacing: '-2.3px' }}
@@ -268,14 +272,16 @@ const ChatPage: React.FC = () => {
                   className="text-sm text-muted-foreground"
                   style={{ letterSpacing: '-0.2px' }}
                 >
-                  Instantly get clear answers to questions about how things work,
-                  how to set them up,
+                  Instantly get clear answers to questions about how things
+                  work, how to set them up,
                   <br />
-                  or how to resolve issues—no matter if it’s about an API, a step
-                  in your workflow, or a tricky system configuration.
+                  or how to resolve issues—no matter if it’s about an API, a
+                  step in your workflow, or a tricky system configuration.
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"> {/* Removed max-w-3xl here as it's on parent */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                {' '}
+                {/* Removed max-w-3xl here as it's on parent */}
                 <div
                   className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
                   onClick={() =>
@@ -293,7 +299,9 @@ const ChatPage: React.FC = () => {
                   className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
                   onClick={() => handleCardClick('How do I reset my password?')}
                 >
-                  <p className="font-medium text-lg mb-1">Password Reset Guide</p>
+                  <p className="font-medium text-lg mb-1">
+                    Password Reset Guide
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     Step-by-step instructions for account recovery.
                   </p>
@@ -304,7 +312,9 @@ const ChatPage: React.FC = () => {
                     handleCardClick('Where can I find the user manual?')
                   }
                 >
-                  <p className="font-medium text-lg mb-1">User Manual Location</p>
+                  <p className="font-medium text-lg mb-1">
+                    User Manual Location
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     Find comprehensive guides and documentation.
                   </p>
@@ -313,11 +323,15 @@ const ChatPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-8 p-4 max-w-4xl mx-auto"> {/* Added max-w-4xl and mx-auto */}
+          <div className="space-y-8 p-4 max-w-4xl mx-auto">
+            {' '}
+            {/* Added max-w-4xl and mx-auto */}
             {messages.map((turn) => (
               <div key={turn.id} className="relative">
                 {/* User Question - Sticky Header */}
-                <div className="sticky top-0 z-10 bg-background py-4 px-4 border-b border-border"> {/* Adjusted padding */}
+                <div className="sticky top-0 z-10 bg-background py-4 px-4 border-b border-border">
+                  {' '}
+                  {/* Adjusted padding */}
                   <div className="flex items-start gap-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src="/placeholder-user.jpg" />
@@ -326,7 +340,10 @@ const ChatPage: React.FC = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <p className="font-semibold text-lg leading-relaxed">
+                      <p
+                        className="text-xl font-medium leading-relaxed"
+                        style={{ letterSpacing: '-0.4px' }}
+                      >
                         {renderTextWithNewlinesAndCode(turn.userMessage.text)}
                       </p>
                     </div>
@@ -335,12 +352,18 @@ const ChatPage: React.FC = () => {
 
                 {/* Bot Answer Section */}
                 {turn.botMessage && (
-                  <div className="mt-4 pl-11"> {/* Indent bot response by 11 units (avatar width + gap) */}
+                  <div className="mt-4 pl-11">
+                    {' '}
+                    {/* Indent bot response by 11 units (avatar width + gap) */}
                     <div className="flex items-center gap-2 mb-2">
                       <Bot className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Answer</span>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Answer
+                      </span>
                     </div>
-                    <div className="p-3 rounded-lg text-foreground"> {/* Removed bg-muted, changed text color */}
+                    <div className="p-3 rounded-lg text-foreground">
+                      {' '}
+                      {/* Removed bg-muted, changed text color */}
                       {renderTextWithNewlinesAndCode(turn.botMessage.text)}
                     </div>
                   </div>
@@ -350,15 +373,17 @@ const ChatPage: React.FC = () => {
           </div>
         )}
         {isLoading && (
-          <div className="flex justify-start items-center gap-3 mt-4 p-4 max-w-4xl mx-auto"> {/* Add p-4 for typing indicator, adjusted width */}
-            <Avatar className="w-8 h-8">
-              <AvatarImage src="/placeholder-bot.jpg" />
-              <AvatarFallback>
-                <Bot className="w-5 h-5" />
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex justify-start items-center gap-3 mt-4 p-4 max-w-4xl mx-auto">
+            {' '}
+            {/* Add p-4 for typing indicator, adjusted width */}
+            <div className="w-8 h-8 flex items-center justify-center"> {/* Container for Lottie */}
+              <Lottie
+                animationData={animationDocument}
+                style={{ height: 50, width: 50 }}
+              />
+            </div>
             <div className="max-w-[70%] p-3 rounded-lg bg-muted text-muted-foreground rounded-bl-none">
-              <p>Typing...</p>
+              <p>Thinking...</p>
             </div>
           </div>
         )}

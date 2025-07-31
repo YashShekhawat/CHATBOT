@@ -17,7 +17,7 @@ const ChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { userRole } = useAuth();
+  const { role } = useAuth(); // Correctly get the user role
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,7 +46,7 @@ const ChatPage: React.FC = () => {
     try {
       const response = await new Promise<string>((resolve) => {
         setTimeout(() => {
-          const botResponse = `Echoing "${newMessage.text}". Your role is: ${userRole}.`;
+          const botResponse = `Echoing "${newMessage.text}". Your role is: ${role || 'unknown'}.`;
           resolve(botResponse);
         }, 1000);
       });
@@ -107,7 +107,7 @@ const ChatPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className-="space-y-4">
+          <div className="space-y-4"> {/* Corrected className- to className */}
             {messages.map((message) => (
               <div
                 key={message.id}

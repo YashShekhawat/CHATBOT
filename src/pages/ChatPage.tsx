@@ -160,18 +160,21 @@ const ChatPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </ScrollArea>
 
-      <form onSubmit={handleSendMessage} className="flex p-4 border-t gap-2">
-        <Input
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={isLoading}
-        />
-        <Button type="submit" disabled={isLoading}>
-          <Send className="h-5 w-5" />
-          <span className="sr-only">Send message</span>
-        </Button>
+      <form onSubmit={handleSendMessage} className="flex p-4 border-t gap-2 justify-center w-full">
+        <div className="flex w-full max-w-3xl gap-2">
+          <Input
+            type="text"
+            placeholder="Type your message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={isLoading}
+            className="bg-transparent border-none flex-1"
+          />
+          <Button type="submit" disabled={isLoading}>
+            <Send className="h-5 w-5" />
+            <span className="sr-only">Send message</span>
+          </Button>
+        </div>
       </form>
     </div>
   );

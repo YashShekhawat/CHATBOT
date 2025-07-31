@@ -6,8 +6,9 @@ type UserRole = 'guest' | 'employee' | null;
 
 interface AuthContextType {
   role: UserRole;
+  userEmail: string | null; // Added userEmail to context type
   loginAsGuest: () => void;
-  loginAsEmployee: (email: string, password: string) => void;
+  loginAsEmployee: (email: string) => void; // Modified to accept the authenticated email
   logout: () => void;
 }
 
@@ -17,6 +18,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('userRole') as UserRole) || null;
+    }
+    return null;
+  });
+  const [userEmail, setUserEmail] = useState<string | null>(() => { // New state for user email
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('userEmail') || null;
     }
     return null;
   });
@@ -30,29 +37,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [role]);
 
+  useEffect(() => { // Effect to persist userEmail in local storage
+    if (userEmail) {
+      localStorage.setItem('userEmail', userEmail);
+    } else {
+      localStorage.removeItem('userEmail');
+    }
+  }, [userEmail]);
+
   const loginAsGuest = () => {
     setRole('guest');
+    setUserEmail(null); // Guests don't have an associated email
     toast.success('Logged in as Guest!');
     navigate('/');
   };
 
-  const loginAsEmployee = (email: string, password: string) => {
-    // TODO: Integrate employee login API here.
-    // For now, simulating a successful login.
-    console.log(`Attempting to log in as employee with email: ${email}, password: ${password}`);
+  // This function now expects the email that was successfully authenticated by the API
+  const loginAsEmployee = (email: string) => {
     setRole('employee');
+    setUserEmail(email); // Store the email received from the API response
     toast.success('Logged in as Employee!');
     navigate('/');
   };
 
   const logout = () => {
     setRole(null);
+    setUserEmail(null); // Clear email on logout
     toast.info('Logged out.');
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ role, loginAsGuest, loginAsEmployee, logout }}>
+    <AuthContext.Provider value={{ role, userEmail, loginAsGuest, loginAsEmployee, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -71,10 +87,6 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   if (!role) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

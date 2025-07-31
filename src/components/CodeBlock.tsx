@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import {
-  vscDarkPlus,
-  oneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Clipboard, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -17,8 +14,6 @@ interface CodeBlockProps {
 const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const [copied, setCopied] = useState(false);
   const { theme } = useTheme();
-
-  const currentThemeStyle = theme === 'dark' ? vscDarkPlus : oneLight;
 
   const handleCopy = () => {
     navigator.clipboard
@@ -37,13 +32,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
     <div className="relative my-2 rounded-md overflow-hidden">
       <SyntaxHighlighter
         language={language}
-        style={currentThemeStyle}
+        style={vscDarkPlus}
         showLineNumbers={false}
         wrapLines={true}
         customStyle={{
           padding: '1rem',
-          borderRadius: '0.375rem',
-          backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f8f8f8', // matches vscDarkPlus & oneLight
+          borderRadius: '0.5rem',
+          backgroundColor: '#1e1e1e',
+          fontSize: '0.875rem',
           overflowX: 'auto',
         }}
       >

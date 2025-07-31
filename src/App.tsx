@@ -8,6 +8,7 @@ import UploadPage from './pages/UploadPage';
 import { ThemeProvider } from './components/theme-provider';
 import EmployeeRoute from './components/EmployeeRoute';
 import Layout from './components/Layout';
+import { Toaster } from 'sonner'; // Import Toaster from sonner
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           </ChatHistoryProvider> {/* Close ChatHistoryProvider */}
         </AuthProvider>
       </Router>
+      <Toaster richColors position="bottom-right" /> {/* Add Sonner Toaster here */}
     </ThemeProvider>
   );
 }

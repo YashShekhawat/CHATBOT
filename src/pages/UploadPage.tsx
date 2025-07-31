@@ -11,11 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadCloud } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
-import { useAuth } from '@/context/AuthContext'; // Import useAuth
+import { toast } from "sonner"; // Ensure sonner toast is imported
+import { useAuth } from '@/context/AuthContext';
 
 const UploadPage = () => {
-  const { role } = useAuth(); // Get the user role
+  const { role } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -32,37 +32,60 @@ const UploadPage = () => {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    // Append the user role to the form data or send as a header
-    // For FormData, it's often easier to append it if the backend expects it in the body.
-    // If the backend expects a header, you'd add it to the fetch options.
-    formData.append('userRole', role || 'unknown'); // Role is sent to backend here.
+    const file = formData.get('file') as File;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    const userName = formData.get('userName') as string;
+    const userEmail = formData.get('userEmail') as string;
 
-    // --- API INTEGRATION POINT ---
-    // Replace this block with your actual API call to upload the file and data.
-    try {
-      // Example API call using FormData with a custom header:
-      // const response = await fetch('/api/upload', {
-      //   method: 'POST',
-      //   headers: {
-      //     'X-User-Role': role || 'unknown', // Role is sent to backend here.
-      //   },
-      //   body: formData,
-      // });
-      // if (!response.ok) throw new Error('Upload failed');
-      // const result = await response.json();
-      // toast.success(result.message || "Knowledge source submitted for processing!");
-      
-      // Simulating network delay for demonstration:
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success(`Knowledge source submitted for processing! (Role: ${role || 'unknown'})`);
-      event.currentTarget.reset();
-      setFileName(null);
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("An error occurred during upload.");
-    } finally {
+    if (!file) {
+      toast.error("Please select a file to upload.");
       setIsSubmitting(false);
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const base64String = (reader.result as string).split(',')[1]; // Remove data prefix
+        const fileNameWithoutExt = file.name.split('.').slice(0, -1).join('.');
+        const fileType = file.name.split('.').pop();
+
+        const payload = {
+          file_content: base64String,
+          file_name: fileNameWithoutExt,
+          file_type: fileType,
+          title: title,
+          description: description,
+          user_name: userName,
+          user_email: userEmail,
+          user_role: role || 'unknown',
+        };
+
+        const response = await fetch('https://your-api-id.execute-api.region.amazonaws.com/dev/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Upload failed.');
+        }
+
+        toast.success('Your knowledge is uploaded successfully!');
+        event.currentTarget.reset();
+        setFileName(null);
+      } catch (error: any) {
+        console.error("Upload error:", error);
+        toast.error(error.message || "An error occurred during upload.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UploadCloud } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react"; // Import useRef
 import { toast } from "sonner";
 import { useAuth } from '@/context/AuthContext';
 
@@ -17,6 +17,7 @@ const UploadPage = () => {
   const { role } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null); // Create a ref for the form
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -67,8 +68,10 @@ const UploadPage = () => {
         }
 
         toast.success('Your knowledge is uploaded successfully!');
-        event.currentTarget.reset();
-        setFileName(null);
+        if (formRef.current) { // Safely check if the ref exists before resetting
+          formRef.current.reset(); // Use the ref to reset the form
+        }
+        setFileName(null); // Clear the displayed file name
       } catch (error: any) {
         console.error("Upload error:", error);
         toast.error(error.message || "An error occurred during upload.");
@@ -89,7 +92,7 @@ const UploadPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8" ref={formRef}> {/* Attach the ref to the form */}
             <div className="space-y-2">
               <Label className="font-semibold">File Source</Label>
               <Label

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } => 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,7 +31,10 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        console.error("API Error Response Data:", errorData); // Log the full error response
+        // Use the message from errorData if available, otherwise a generic message
+        const errorMessage = errorData.message || 'Login failed. Please check your credentials.';
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -45,7 +48,8 @@ const LoginPage = () => {
       }
       // The loginAsEmployee function already handles navigation and success toast.
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('Login error caught:', error);
+      // Ensure the toast displays the error message from the thrown Error object
       toast.error(error.message || 'An unexpected error occurred during login.');
     } finally {
       setIsSubmitting(false); // Reset submitting state

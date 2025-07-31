@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Textarea } from '@/components/ui/textarea'; // Changed from Input to Textarea
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, User, ArrowUp } from 'lucide-react'; // Changed Send to ArrowUp
+import { Bot, User, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface Message {
@@ -17,7 +17,7 @@ const ChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null); // Added textareaRef
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { role } = useAuth();
 
   const scrollToBottom = () => {
@@ -91,7 +91,7 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 pb-[120px]"> {/* Added pb-[120px] */}
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <h1 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-6">
@@ -175,7 +175,6 @@ const ChatPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </ScrollArea>
 
-      {/* Reverted input area to previous styling */}
       <div className="fixed bottom-0 left-0 right-0 z-10 p-4 md:left-64">
         <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-lg">
           <form

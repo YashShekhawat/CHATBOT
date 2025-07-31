@@ -9,7 +9,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UploadCloud } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef } from 'react'; // Import useRef
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 
@@ -17,7 +17,7 @@ const UploadPage = () => {
   const { role } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLFormElement>(null); // Create a ref for the form
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -43,7 +43,7 @@ const UploadPage = () => {
     const reader = new FileReader();
     reader.onloadend = async () => {
       try {
-        const base64String = (reader.result as string).split(',')[1];
+        const base64String = (reader.result as string).split(',')[1]; // Remove data prefix
         const fileNameWithoutExt = file.name.split('.').slice(0, -1).join('.');
         const fileType = file.name.split('.').pop();
 
@@ -51,7 +51,7 @@ const UploadPage = () => {
           file_content: base64String,
           file_name: fileNameWithoutExt,
           file_type: fileType,
-          user_role: role || 'unknown',
+          user_role: role || 'unknown', // Include user role
         };
 
         const response = await fetch(
@@ -72,9 +72,10 @@ const UploadPage = () => {
 
         toast.success('Your knowledge is uploaded successfully!');
         if (formRef.current) {
-          formRef.current.reset();
+          // Safely check if the ref exists before resetting
+          formRef.current.reset(); // Use the ref to reset the form
         }
-        setFileName(null);
+        setFileName(null); // Clear the displayed file name
       } catch (error: any) {
         console.error('Upload error:', error);
         toast.error(error.message || 'An error occurred during upload.');
@@ -96,6 +97,8 @@ const UploadPage = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8" ref={formRef}>
+            {' '}
+            {/* Attach the ref to the form */}
             <div className="space-y-2">
               <Label className="font-semibold">File Source</Label>
               <Label

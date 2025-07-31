@@ -4,19 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
+import { toast } from 'sonner'; // Import toast for notifications
 
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage loading/submitting
+  const [loginError, setLoginError] = useState<string | null>(null); // State for displaying login errors
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsSubmitting(true); // Set submitting state to true
     setLoginError(null); // Clear previous errors
 
     try {
@@ -33,7 +33,8 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API Error Response Data:', errorData);
+        console.error('API Error Response Data:', errorData); // Log the full error response
+        // Use the message from errorData if available, otherwise a generic message
         const errorMessage =
           errorData.message || 'Login failed. Please check your credentials.';
         throw new Error(errorMessage);
@@ -43,7 +44,6 @@ const LoginPage = () => {
       if (data.email) {
         loginAsEmployee(data.email);
       } else {
-        // Fallback if API doesn't return email, use the one entered
         loginAsEmployee(email);
       }
     } catch (error: any) {
@@ -82,7 +82,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         loginAsGuest();
-                        setLoginError(null); // Clear error on guest login attempt
+                        setLoginError(null); // Clear error when switching to guest
                       }}
                       className="w-full py-6 text-lg"
                     >
@@ -96,7 +96,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         setShowEmployeeForm(true);
-                        setLoginError(null); // Clear error when switching to employee form
+                        setLoginError(null);
                       }}
                       variant="outline"
                       className="w-full py-6 text-lg"
@@ -118,7 +118,7 @@ const LoginPage = () => {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting} // Disable input during submission
                       />
                     </div>
                     <div className="space-y-2">
@@ -129,7 +129,7 @@ const LoginPage = () => {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting} // Disable input during submission
                       />
                       {loginError && (
                         <p className="text-sm text-red-500 mt-1">
@@ -152,7 +152,7 @@ const LoginPage = () => {
                         setLoginError(null); // Clear error when going back
                       }}
                       className="w-full"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting} // Disable button during submission
                     >
                       Back to options
                     </Button>
@@ -162,10 +162,11 @@ const LoginPage = () => {
             </Card>
           </div>
         </div>
+        {/* Right Section: Image/Visual */}
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
           <div className="flex justify-center">
             <img
-              src="/public/qwikchat.svg"
+              src="/public/qwikchat.svg" // Placeholder image
               alt="Visual representation"
               width="80%"
               className="max-w-full h-auto rounded-md mb-4"

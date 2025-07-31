@@ -13,8 +13,11 @@ const EmployeeRoute: React.FC<EmployeeRouteProps> = ({ children }) => {
   if (role === 'employee') {
     return <>{children}</>;
   } else if (role) {
+    // User is logged in but not an employee (e.g., guest)
     return <Navigate to="/chat" state={{ from: location }} replace />;
   } else {
+    // User is not logged in at all, let ProtectedRoute handle it (redirect to /login)
+    // This case should ideally be caught by an outer ProtectedRoute, but included for robustness.
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 };

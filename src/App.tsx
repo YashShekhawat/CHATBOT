@@ -1,23 +1,24 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context/AuthContext';
-import { ChatHistoryProvider } from './context/ChatHistoryContext';
+import { ChatHistoryProvider } from './context/ChatHistoryContext'; // Import ChatHistoryProvider
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 import UploadPage from './pages/UploadPage';
 import { ThemeProvider } from './components/theme-provider';
 import EmployeeRoute from './components/EmployeeRoute';
 import Layout from './components/Layout';
-import { Toaster } from 'sonner';
+import { Toaster } from 'sonner'; // Import Toaster from sonner
 
 function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <Router>
         <AuthProvider>
-          <ChatHistoryProvider>
+          <ChatHistoryProvider> {/* Wrap with ChatHistoryProvider */}
             <Routes>
               <Route path="/login" element={<LoginPage />} />
+              {/* Protected routes using the new Layout */}
               <Route
                 path="/"
                 element={
@@ -26,7 +27,7 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<ChatPage />} />
+                <Route index element={<ChatPage />} /> {/* Default route for / */}
                 <Route path="chat" element={<ChatPage />} />
                 <Route
                   path="upload"
@@ -38,10 +39,10 @@ function App() {
                 />
               </Route>
             </Routes>
-          </ChatHistoryProvider>
+          </ChatHistoryProvider> {/* Close ChatHistoryProvider */}
         </AuthProvider>
       </Router>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" /> {/* Changed position to top-right */}
     </ThemeProvider>
   );
 }

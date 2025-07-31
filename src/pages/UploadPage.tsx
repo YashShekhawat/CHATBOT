@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { UploadCloud } from "lucide-react";
-import { useState, useRef } from "react"; // Import useRef
-import { toast } from "sonner";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { UploadCloud } from 'lucide-react';
+import { useState, useRef } from 'react'; // Import useRef
+import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 
 const UploadPage = () => {
@@ -35,7 +35,7 @@ const UploadPage = () => {
     const file = formData.get('file') as File;
 
     if (!file) {
-      toast.error("Please select a file to upload.");
+      toast.error('Please select a file to upload.');
       setIsSubmitting(false);
       return;
     }
@@ -54,13 +54,16 @@ const UploadPage = () => {
           user_role: role || 'unknown', // Include user role
         };
 
-        const response = await fetch('https://your-api-id.execute-api.region.amazonaws.com/dev/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+          'https://lsryw4rfx7.execute-api.ap-south-1.amazonaws.com/bot-api-gateway-stage/upload',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          }
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -68,13 +71,14 @@ const UploadPage = () => {
         }
 
         toast.success('Your knowledge is uploaded successfully!');
-        if (formRef.current) { // Safely check if the ref exists before resetting
+        if (formRef.current) {
+          // Safely check if the ref exists before resetting
           formRef.current.reset(); // Use the ref to reset the form
         }
         setFileName(null); // Clear the displayed file name
       } catch (error: any) {
-        console.error("Upload error:", error);
-        toast.error(error.message || "An error occurred during upload.");
+        console.error('Upload error:', error);
+        toast.error(error.message || 'An error occurred during upload.');
       } finally {
         setIsSubmitting(false);
       }
@@ -92,7 +96,9 @@ const UploadPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8" ref={formRef}> {/* Attach the ref to the form */}
+          <form onSubmit={handleSubmit} className="space-y-8" ref={formRef}>
+            {' '}
+            {/* Attach the ref to the form */}
             <div className="space-y-2">
               <Label className="font-semibold">File Source</Label>
               <Label
@@ -101,7 +107,9 @@ const UploadPage = () => {
               >
                 {fileName ? (
                   <div className="text-center p-4">
-                    <p className="font-semibold text-primary break-all">{fileName}</p>
+                    <p className="font-semibold text-primary break-all">
+                      {fileName}
+                    </p>
                     <p className="text-sm text-muted-foreground mt-2">
                       Click to change file
                     </p>
@@ -129,9 +137,13 @@ const UploadPage = () => {
                 />
               </Label>
             </div>
-
-            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit Knowledge"}
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Knowledge'}
             </Button>
           </form>
         </CardContent>

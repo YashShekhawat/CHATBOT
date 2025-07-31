@@ -42,7 +42,7 @@ function App() {
           </ChatHistoryProvider> {/* Close ChatHistoryProvider */}
         </AuthProvider>
       </Router>
-      <Toaster richColors position="bottom-right" /> {/* Add Sonner Toaster here */}
+      <Toaster richColors position="top-right" /> {/* Changed position to top-right */}
     </ThemeProvider>
   );
 }

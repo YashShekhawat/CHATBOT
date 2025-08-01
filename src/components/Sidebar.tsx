@@ -45,6 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     }
   };
 
+  // Determine which logo to display based on the current theme
   const logoSrc = theme === 'dark' ? '/logoDark.png' : '/logo.png';
 
   return (
@@ -59,7 +60,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
               variant="ghost"
               className={cn(
                 'w-full justify-start',
-                (location.pathname === '/chat' || location.pathname === '/') &&
+                (location.pathname === '/chat' ||
+                  location.pathname === '/') &&
                   'bg-accent text-accent-foreground'
               )}
             >

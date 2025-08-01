@@ -5,6 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { useTheme } from '@/components/theme-provider'; // Import useTheme
+import { Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
+
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
@@ -12,11 +15,12 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const { theme, setTheme } = useTheme(); // Get theme and setTheme
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true); // Set submitting state to true
-    setLoginError(null); // Clear previous errors
+    setIsSubmitting(true);
+    setLoginError(null);
 
     try {
       const response = await fetch(
@@ -32,8 +36,7 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API Error Response Data:', errorData); // Log the full error response
-        // Use the message from errorData if available, otherwise a generic message
+        console.error('API Error Response Data:', errorData);
         const errorMessage =
           errorData.message || 'Login failed. Please check your credentials.';
         throw new Error(errorMessage);
@@ -55,6 +58,15 @@ const LoginPage = () => {
       setIsSubmitting(false);
     }
   };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  // Determine which image to display based on the current theme
+  const loginImageSrc = theme === 'dark' ? '/qwikchatDark.svg' : '/qwikchat.svg';
+  // IMPORTANT: If you don't have 'qwikchatDark.svg', the image might not change.
+  // Please create a 'qwikchatDark.svg' file in your 'public' folder for dark mode.
 
   return (
     <div className="h-screen flex flex-col bg-muted/40">
@@ -117,7 +129,7 @@ const LoginPage = () => {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        disabled={isSubmitting} // Disable input during submission
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-2">
@@ -128,7 +140,7 @@ const LoginPage = () => {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        disabled={isSubmitting} // Disable input during submission
+                        disabled={isSubmitting}
                       />
                       {loginError && (
                         <p className="text-sm text-red-500 mt-1">
@@ -148,10 +160,10 @@ const LoginPage = () => {
                       variant="link"
                       onClick={() => {
                         setShowEmployeeForm(false);
-                        setLoginError(null); // Clear error when going back
+                        setLoginError(null);
                       }}
                       className="w-full"
-                      disabled={isSubmitting} // Disable button during submission
+                      disabled={isSubmitting}
                     >
                       Back to options
                     </Button>
@@ -162,10 +174,24 @@ const LoginPage = () => {
           </div>
         </div>
         {/* Right Section: Image/Visual */}
-        <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
+        <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full relative">
+          {/* Theme Toggle Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="absolute top-4 right-4"
+          >
+            {theme === 'light' ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
           <div className="flex justify-center">
             <img
-              src="/qwikchat.svg"
+              src={loginImageSrc}
               alt="Visual representation"
               width="80%"
               className="max-w-full h-auto rounded-md mb-4"

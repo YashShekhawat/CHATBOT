@@ -266,38 +266,44 @@ const ChatPage: React.FC = () => {
                 <div
                   className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
                   onClick={() =>
-                    handleCardClick('What are the latest product updates?')
+                    handleCardClick(
+                      'What is woohoo Beneficiary Validation API and share Request Body For Bank Account, and UPI.'
+                    )
                   }
                 >
                   <p className="font-medium text-lg mb-1">
-                    Latest Product Updates
+                    Beneficiary Validation API
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Discover new features and improvements.
-                  </p>
-                </div>
-                <div
-                  className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
-                  onClick={() => handleCardClick('How do I reset my password?')}
-                >
-                  <p className="font-medium text-lg mb-1">
-                    Password Reset Guide
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Step-by-step instructions for account recovery.
+                    Get insights on our beneficiary API.
                   </p>
                 </div>
                 <div
                   className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
                   onClick={() =>
-                    handleCardClick('Where can I find the user manual?')
+                    handleCardClick(
+                      'what is Woohoo Customer Creation API and explain how the card will be created share sample request body?'
+                    )
                   }
                 >
                   <p className="font-medium text-lg mb-1">
-                    User Manual Location
+                    Customer Creation API
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Find comprehensive guides and documentation.
+                    Step-by-step instructions for customer creation.
+                  </p>
+                </div>
+                <div
+                  className="p-4 border rounded-lg cursor-pointer hover:bg-muted transition-colors flex flex-col items-start text-left"
+                  onClick={() =>
+                    handleCardClick(
+                      'what is Woohoo Order Resend API? Share sample request body for this.'
+                    )
+                  }
+                >
+                  <p className="font-medium text-lg mb-1">Order Resend API</p>
+                  <p className="text-sm text-muted-foreground">
+                    Find comprehensive guide for order resend.
                   </p>
                 </div>
               </div>

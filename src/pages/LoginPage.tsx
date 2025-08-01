@@ -4,15 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner'; // Import toast for notifications
-
+import { toast } from 'sonner'; 
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage loading/submitting
-  const [loginError, setLoginError] = useState<string | null>(null); // State for displaying login errors
+  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [loginError, setLoginError] = useState<string | null>(null); 
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +81,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         loginAsGuest();
-                        setLoginError(null); // Clear error when switching to guest
+                        setLoginError(null); 
                       }}
                       className="w-full py-6 text-lg"
                     >

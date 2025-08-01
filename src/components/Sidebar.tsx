@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Upload, LogOut, MessageSquare, Sun, Moon, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from './theme-provider'; // Import useTheme
+import { useTheme } from './theme-provider';
 import { toast } from 'sonner';
 import { getChatHistoryKey } from '@/utils/constants';
 import { useChatHistory } from '@/context/ChatHistoryContext';
@@ -16,7 +16,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout, role, userEmail } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme(); // Get theme and setTheme from useTheme
+  const { theme, setTheme } = useTheme();
   const { triggerClearChatHistory } = useChatHistory();
   const location = useLocation();
 
@@ -45,10 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     }
   };
 
-  // Determine which logo to display based on the current theme
-  const logoSrc = theme === 'dark' ? '/public/logo-dark.png' : '/public/logo-light.png';
-  // IMPORTANT: Replace '/public/logo-dark.png' and '/public/logo-light.png' with your actual image paths.
-  // Make sure these images exist in your public folder.
+  const logoSrc =
+    theme === 'dark' ? '/public/logoDark.png' : '/public/logo.png';
 
   return (
     <div className="flex flex-col h-full p-4 border-r border-border bg-background text-foreground">
@@ -62,8 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
               variant="ghost"
               className={cn(
                 'w-full justify-start',
-                (location.pathname === '/chat' ||
-                  location.pathname === '/') &&
+                (location.pathname === '/chat' || location.pathname === '/') &&
                   'bg-accent text-accent-foreground'
               )}
             >

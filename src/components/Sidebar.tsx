@@ -45,8 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     }
   };
 
-  const logoSrc =
-    theme === 'dark' ? '/public/logoDark.png' : '/public/logo.png';
+  const logoSrc = theme === 'dark' ? '/logoDark.png' : '/logo.png';
 
   return (
     <div className="flex flex-col h-full p-4 border-r border-border bg-background text-foreground">

@@ -63,7 +63,7 @@ const LoginPage = () => {
           <div className="w-full max-w-sm">
             <div className="mb-8">
               <div className="mb-16">
-                <img src="/public/logo.png" alt="" width="190px" />
+                <img src="/logo.png" alt="" width="190px" />
               </div>
               <h1 className="text-5xl font-semibold tracking-tight leading-12  mb-2">
                 Have Issues? <br />

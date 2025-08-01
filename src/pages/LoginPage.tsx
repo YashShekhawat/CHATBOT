@@ -165,7 +165,7 @@ const LoginPage = () => {
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
           <div className="flex justify-center">
             <img
-              src="/qwikchat.svg" // Placeholder image
+              src="/qwikchat.svg"
               alt="Visual representation"
               width="80%"
               className="max-w-full h-auto rounded-md mb-4"

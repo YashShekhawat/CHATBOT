@@ -10,7 +10,7 @@ import animationDocument from '../../public/animation.json';
 import Lottie from 'lottie-react';
 import CodeBlock from '@/components/CodeBlock';
 import { toast } from 'sonner';
-import { getChatHistoryKey } from '@/utils/constants'; // Import the new helper
+import { getChatHistoryKey } from '@/utils/constants';
 
 interface Message {
   id: string;
@@ -19,32 +19,27 @@ interface Message {
 }
 
 interface ConversationTurn {
-  id: string; // Unique ID for the turn
+  id: string;
   userMessage: Message;
-  botMessage?: Message; // Optional, as bot response might be pending
+  botMessage?: Message;
 }
 
-// Helper function to render text with newlines and code blocks
 const renderTextWithNewlinesAndCode = (text: string) => {
   const parts = text.split('```');
   return parts.map((part, index) => {
     if (index % 2 === 1) {
-      // This is a code block
       const lines = part.split('\n');
       let language = 'plaintext';
       let codeContent = part;
 
-      // Check if the first line specifies a language
       if (
         lines.length > 0 &&
         lines[0].trim().length > 0 &&
         !lines[0].includes(' ')
       ) {
-        // If the first line is a single word (e.g., 'javascript'), treat it as the language
         language = lines[0].trim();
-        codeContent = lines.slice(1).join('\n'); // Remove the first line (language)
+        codeContent = lines.slice(1).join('\n');
       } else {
-        // If no language is specified, the entire part is code
         codeContent = part;
       }
 
@@ -52,7 +47,6 @@ const renderTextWithNewlinesAndCode = (text: string) => {
         <CodeBlock key={index} code={codeContent.trim()} language={language} />
       );
     } else {
-      // This is regular text, handle newlines
       return part.split('\n').map((line, lineIndex) => (
         <p
           key={`${index}-${lineIndex}`}
@@ -79,7 +73,6 @@ const ChatPage: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Load messages from local storage on component mount for employees
   useEffect(() => {
     if (role === 'employee' && userEmail) {
       const historyKey = getChatHistoryKey(userEmail);
@@ -89,7 +82,6 @@ const ChatPage: React.FC = () => {
           const parsedMessages: Message[] | ConversationTurn[] =
             JSON.parse(storedMessages);
 
-          // Check if it's the old Message[] format and convert
           if (parsedMessages.length > 0 && 'sender' in parsedMessages[0]) {
             const convertedTurns: ConversationTurn[] = [];
             for (let i = 0; i < parsedMessages.length; i++) {
@@ -102,9 +94,8 @@ const ChatPage: React.FC = () => {
                     userMessage: msg,
                     botMessage: nextMsg,
                   });
-                  i++; // Skip the bot message as it's now part of the turn
+                  i++;
                 } else {
-                  // User message without a bot response (e.g., last message)
                   convertedTurns.push({
                     id: msg.id,
                     userMessage: msg,
@@ -114,7 +105,6 @@ const ChatPage: React.FC = () => {
             }
             setMessages(convertedTurns);
           } else {
-            // It's already the new ConversationTurn[] format
             setMessages(parsedMessages as ConversationTurn[]);
           }
         } else {
@@ -125,12 +115,10 @@ const ChatPage: React.FC = () => {
         toast.error('Failed to load chat history.');
       }
     } else {
-      // Clear messages if not an employee or no userEmail (e.g., guest or logged out)
       setMessages([]);
     }
   }, [role, userEmail, clearHistoryTrigger]);
 
-  // Save messages to local storage whenever messages state changes for employees
   useEffect(() => {
     if (role === 'employee' && userEmail) {
       const historyKey = getChatHistoryKey(userEmail);
@@ -138,7 +126,6 @@ const ChatPage: React.FC = () => {
         if (messages.length > 0) {
           localStorage.setItem(historyKey, JSON.stringify(messages));
         } else {
-          // If messages become empty for an employee, clear local storage
           localStorage.removeItem(historyKey);
         }
       } catch (error) {
@@ -170,11 +157,10 @@ const ChatPage: React.FC = () => {
       sender: 'user',
     };
 
-    // Create a new conversation turn
     const newTurn: ConversationTurn = {
-      id: userMsgId, // Use user message ID for turn ID
+      id: userMsgId,
       userMessage: newUserMessage,
-      botMessage: undefined, // Bot message will be added later
+      botMessage: undefined,
     };
 
     setMessages((prevMessages) => [...prevMessages, newTurn]);
@@ -190,8 +176,8 @@ const ChatPage: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            role: role || 'guest', // Send the actual role or 'guest' if null
-            query: newUserMessage.text, // Send the user's query
+            role: role || 'guest',
+            query: newUserMessage.text,
           }),
         }
       );
@@ -209,7 +195,6 @@ const ChatPage: React.FC = () => {
         sender: 'bot',
       };
 
-      // Update the last conversation turn with the bot message
       setMessages((prevMessages) =>
         prevMessages.map((turn) =>
           turn.id === userMsgId ? { ...turn, botMessage: botMessage } : turn
@@ -255,8 +240,6 @@ const ChatPage: React.FC = () => {
               />
             </div>
             <div className="max-w-3xl mx-auto">
-              {' '}
-              {/* Added max-w and mx-auto */}
               <h1
                 className="text-4xl font-light text-gray-700 dark:text-gray-300 mb-6"
                 style={{ letterSpacing: '-2.3px' }}
@@ -322,14 +305,9 @@ const ChatPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-8 p-4 max-w-4xl mx-auto">
-            {' '}
-            {/* Added max-w-4xl and mx-auto */}
             {messages.map((turn) => (
               <div key={turn.id} className="relative">
-                {/* User Question - Sticky Header */}
                 <div className="sticky top-0 z-10 bg-background py-4 px-4 border-b border-border">
-                  {' '}
-                  {/* Adjusted padding */}
                   <div className="flex items-start gap-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src="/placeholder-user.jpg" />
@@ -348,11 +326,8 @@ const ChatPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Bot Answer Section */}
                 {turn.botMessage && (
                   <div className="mt-4 pl-11">
-                    {' '}
-                    {/* Indent bot response by 11 units (avatar width + gap) */}
                     <div className="flex items-center gap-2 mb-2">
                       <Bot className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm font-medium text-muted-foreground">
@@ -360,8 +335,6 @@ const ChatPage: React.FC = () => {
                       </span>
                     </div>
                     <div className="p-3 rounded-lg text-foreground">
-                      {' '}
-                      {/* Removed bg-muted, changed text color */}
                       {renderTextWithNewlinesAndCode(turn.botMessage.text)}
                     </div>
                   </div>

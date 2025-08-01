@@ -6,9 +6,9 @@ import { type ThemeProviderProps } from "next-themes/dist/types";
 type Theme = "dark" | "light" | "system";
 
 type ThemeContextType = {
-  theme: Theme; // The user's selected preference ('light', 'dark', or 'system')
+  theme: Theme;
   setTheme: (theme: Theme) => void;
-  resolvedTheme: "dark" | "light" | null; // The actual theme applied ('dark' or 'light')
+  resolvedTheme: "dark" | "light" | null;
 };
 
 const ThemeContext = React.createContext<ThemeContextType | undefined>(undefined);
@@ -37,11 +37,10 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
     }
 
     root.classList.add(currentResolvedTheme);
-    localStorage.setItem(storageKey, theme); // Store the user's preference, not the resolved one
-    setResolvedTheme(currentResolvedTheme); // Update the resolved theme state
+    localStorage.setItem(storageKey, theme);
+    setResolvedTheme(currentResolvedTheme);
   }, [theme, storageKey]);
 
-  // Listen for system theme changes if current theme is 'system'
   React.useEffect(() => {
     if (theme === "system") {
       const mql = window.matchMedia("(prefers-color-scheme: dark)");

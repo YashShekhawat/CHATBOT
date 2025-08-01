@@ -15,7 +15,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { theme, setTheme, resolvedTheme } = useTheme(); // Get theme, setTheme, and resolvedTheme
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +63,6 @@ const LoginPage = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  // Determine which image to display based on the resolved theme
   const loginImageSrc = resolvedTheme === 'dark' ? '/qwikchatDark.svg' : '/qwikchat.svg';
 
   return (
@@ -171,9 +170,7 @@ const LoginPage = () => {
             </Card>
           </div>
         </div>
-        {/* Right Section: Image/Visual */}
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full relative">
-          {/* Theme Toggle Button */}
           <Button
             variant="ghost"
             size="icon"

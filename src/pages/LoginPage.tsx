@@ -4,14 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner'; 
+import { toast } from 'sonner';
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); 
-  const [loginError, setLoginError] = useState<string | null>(null); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +81,7 @@ const LoginPage = () => {
                     <Button
                       onClick={() => {
                         loginAsGuest();
-                        setLoginError(null); 
+                        setLoginError(null);
                       }}
                       className="w-full py-6 text-lg"
                     >
@@ -165,7 +165,7 @@ const LoginPage = () => {
         <div className="bg-muted/20 p-8 md:p-12 flex items-center justify-center h-full">
           <div className="flex justify-center">
             <img
-              src="/public/qwikchat.svg" // Placeholder image
+              src="/qwikchat.svg" // Placeholder image
               alt="Visual representation"
               width="80%"
               className="max-w-full h-auto rounded-md mb-4"

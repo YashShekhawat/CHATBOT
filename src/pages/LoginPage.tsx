@@ -63,10 +63,9 @@ const LoginPage = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  // Determine which image to display based on the current theme
-  const loginImageSrc = theme === 'dark' ? '/qwikchatDark.svg' : '/qwikchat.svg';
-  // IMPORTANT: If you don't have 'qwikchatDark.svg', the image might not change.
-  // Please create a 'qwikchatDark.svg' file in your 'public' folder for dark mode.
+  const loginImageSrc =
+    theme === 'dark' ? '/qwikchatdark.svg' : '/qwikchat.svg';
+  const logoImage = theme === 'dark' ? '/logoDark.png' : '/logo.png';
 
   return (
     <div className="h-screen flex flex-col bg-muted/40">
@@ -75,7 +74,7 @@ const LoginPage = () => {
           <div className="w-full max-w-sm">
             <div className="mb-8">
               <div className="mb-16">
-                <img src="/logo.png" alt="" width="190px" />
+                <img src={logoImage} alt="" width="190px" />
               </div>
               <h1 className="text-5xl font-semibold tracking-tight leading-12  mb-2">
                 Have Issues? <br />

@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
-import { useTheme } from '@/components/theme-provider'; // Import useTheme
-import { Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
+import { useTheme } from '@/components/theme-provider';
+import { Sun, Moon } from 'lucide-react';
 
 const LoginPage = () => {
   const { loginAsGuest, loginAsEmployee } = useAuth();
@@ -15,7 +15,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { theme, setTheme } = useTheme(); // Get theme and setTheme
+  const { theme, setTheme, resolvedTheme } = useTheme(); // Get theme, setTheme, and resolvedTheme
 
   const handleEmployeeLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,9 +63,8 @@ const LoginPage = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const loginImageSrc =
-    theme === 'dark' ? '/qwikchatdark.svg' : '/qwikchat.svg';
-  const logoImage = theme === 'dark' ? '/logoDark.png' : '/logo.png';
+  // Determine which image to display based on the resolved theme
+  const loginImageSrc = resolvedTheme === 'dark' ? '/qwikchatDark.svg' : '/qwikchat.svg';
 
   return (
     <div className="h-screen flex flex-col bg-muted/40">
@@ -74,7 +73,7 @@ const LoginPage = () => {
           <div className="w-full max-w-sm">
             <div className="mb-8">
               <div className="mb-16">
-                <img src={logoImage} alt="" width="190px" />
+                <img src="/logo.png" alt="" width="190px" />
               </div>
               <h1 className="text-5xl font-semibold tracking-tight leading-12  mb-2">
                 Have Issues? <br />

@@ -16,7 +16,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const { logout, role, userEmail } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme(); // Get theme, setTheme, and resolvedTheme
   const { triggerClearChatHistory } = useChatHistory();
   const location = useLocation();
 
@@ -45,8 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     }
   };
 
-  // Determine which logo to display based on the current theme
-  const logoSrc = theme === 'dark' ? '/logoDark.png' : '/logo.png';
+  // Determine which logo to display based on the resolved theme
+  const logoSrc = resolvedTheme === 'dark' ? '/logoDark.png' : '/logo.png';
 
   return (
     <div className="flex flex-col h-full p-4 border-r border-border bg-background text-foreground">

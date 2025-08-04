@@ -63,7 +63,7 @@ const LoginPage = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const loginImageSrc = resolvedTheme === 'dark' ? '/qwikchatDark.svg' : '/qwikchat.svg';
+  const loginImageSrc = resolvedTheme === 'dark' ? '/qwikchatdark.svg' : '/qwikchat.svg';
 
   return (
     <div className="h-screen flex flex-col bg-muted/40">
